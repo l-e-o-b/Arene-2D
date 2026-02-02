@@ -4,7 +4,7 @@
 #include <ostream>
 
 #include "NpcContext.h"
-#include "State.h"
+#include "StateMachine/State.h"
 
 namespace NpcAi
 {
