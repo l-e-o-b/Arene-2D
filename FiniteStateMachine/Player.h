@@ -17,6 +17,7 @@ public:
     int gethp();
     int getdmg();
     void sethp(int new_hp);
+    void clampToMap(const sf::FloatRect& bounds);
     const sf::Vector2f& getPosition() const;
 
 private:

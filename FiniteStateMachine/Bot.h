@@ -37,6 +37,7 @@ public:
     bool canBeHit() const;
     void setHit();
     bool checkHit(const sf::CircleShape& atkCircle) const;
+    void clampToMap(const sf::FloatRect& bounds);
     int gethp();
     int getdmg();
     void sethp(int new_hp);

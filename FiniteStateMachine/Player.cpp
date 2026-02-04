@@ -84,13 +84,13 @@ int Player::getdmg() {
 void Player ::sethp(int new_hp) {
     hp = new_hp;
 }
-void Player::clampToWindow(const sf::Vector2u& windowSize)
+void Player::clampToMap(const sf::FloatRect& bounds)
 {
     sf::Vector2f pos = shape.getPosition();
     sf::Vector2f half = shape.getSize() / 2.f;
 
-    pos.x = std::clamp(pos.x, half.x, windowSize.x - half.x);
-    pos.y = std::clamp(pos.y, half.y, windowSize.y - half.y);
+    pos.x = std::clamp(pos.x, (bounds.position.x + half.x), bounds.position.x + (bounds.size.x - half.x));
+    pos.y = std::clamp(pos.y, (bounds.position.y + half.y), bounds.position.y + (bounds.size.y - half.y));
 
     shape.setPosition(pos);
 }

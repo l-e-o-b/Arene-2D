@@ -65,14 +65,17 @@ void Game::processEvents()
 
 void Game::update(float dt)
 {
+    auto bounds = map.getInnerBounds();
     player.update(dt);
-    player.clampToWindow(window.getSize());
+    player.clampToMap(bounds);
 
     aggressiveBot.getContext().playerPosition = player.getPosition();
     zoneBot.getContext().playerPosition = player.getPosition();
 
     aggressiveBot.Update(dt);
+    aggressiveBot.clampToMap(bounds);
     zoneBot.Update(dt);
+    zoneBot.clampToMap(bounds);
 }
 
 void Game::render()
@@ -84,6 +87,7 @@ void Game::render()
         aggressiveBot.Render(window);
     if (zoneBot.gethp() > 0)
         zoneBot.Render(window);
+    map.render(window);
     window.display();
 }
 
