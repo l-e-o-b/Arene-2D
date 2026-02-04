@@ -10,8 +10,6 @@ public:
 
     void update(float dt);
     void render(sf::RenderWindow& window);
-
-    void clampToWindow(const sf::Vector2u& windowSize);
     const sf::CircleShape& getAtkCircle() const;
     bool isAttacking() const;
     int gethp();
@@ -19,7 +17,9 @@ public:
     void sethp(int new_hp);
     void clampToMap(const sf::FloatRect& bounds);
     const sf::Vector2f& getPosition() const;
-
+    void movement(float dt);
+    void following_circle(float dt);
+    void Attack();
 private:
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;

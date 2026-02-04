@@ -28,6 +28,12 @@ const sf::Vector2f& Player::getPosition() const
 
 void Player::update(float dt)
 {
+    movement(dt);
+    following_circle(dt);
+    Attack();
+}
+
+void Player::movement(float dt) {
     sf::Vector2f movement{ 0.f, 0.f };
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
@@ -40,7 +46,9 @@ void Player::update(float dt)
         movement.x += speed;
 
     shape.move(movement * dt);
+}
 
+void Player::following_circle(float dt){
     atkAcc += sf::seconds(dt);
     if (atk_state)
     {
@@ -53,7 +61,9 @@ void Player::update(float dt)
             atkDuration = sf::Time::Zero;
         }
     }
+}
 
+void Player::Attack() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
     {
         sf::Time interval = sf::seconds(1.f / atk_speed);

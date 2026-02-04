@@ -51,6 +51,22 @@ void Game::run()
     }
 }
 
+void Game::player_enemy(Bot bot) {
+    if (bot.gethp() > 0 &&
+        player.isAttacking() &&
+        bot.canBeHit() &&
+        bot.checkHit(player.getAtkCircle()))
+    {
+        bot.sethp(bot.gethp() - player.getdmg());
+        std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
+        bot.setHit();
+    }
+    if (!player.isAttacking()) {
+        bot.resetHit();
+
+    }
+}
+
 void Game::processEvents()
 {
     while (const auto event = window.pollEvent())
@@ -69,13 +85,18 @@ void Game::update(float dt)
     player.update(dt);
     player.clampToMap(bounds);
 
-    aggressiveBot.getContext().playerPosition = player.getPosition();
-    zoneBot.getContext().playerPosition = player.getPosition();
+    if (aggressiveBot.gethp() > 0){
+        aggressiveBot.getContext().playerPosition = player.getPosition();
+        aggressiveBot.Update(dt);
+        aggressiveBot.clampToMap(bounds);
+    }
 
-    aggressiveBot.Update(dt);
-    aggressiveBot.clampToMap(bounds);
-    zoneBot.Update(dt);
-    zoneBot.clampToMap(bounds);
+    if (aggressiveBot.gethp() > 0) {
+        zoneBot.getContext().playerPosition = player.getPosition();
+        zoneBot.Update(dt);
+        zoneBot.clampToMap(bounds);
+    }
+    
 }
 
 void Game::render()
