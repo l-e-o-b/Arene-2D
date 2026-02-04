@@ -2,9 +2,10 @@
 
 Game::Game()
     : window(sf::VideoMode{ sf::Vector2u{800, 600} }, "Mini Arene 2D")
-    , bot(sf::Vector2f{ 600.f, 300.f })
+    , bot(sf::Vector2f{ 600.f, 300.f }, BotType::Aggressive)
 {
     window.setFramerateLimit(60);
+    bot.Init();
 }
 
 
@@ -38,6 +39,8 @@ void Game::update(float dt)
     player.update(dt);
     player.clampToWindow(window.getSize());
     bot.Update(dt);
+
+    bot.getContext().playerPosition = player.getPosition();
 
 }
 

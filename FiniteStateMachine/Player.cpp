@@ -10,6 +10,13 @@ Player::Player()
     speed = 250.f;
 }
 
+
+const sf::Vector2f& Player::getPosition() const
+{
+    return shape.getPosition();
+}
+
+
 void Player::update(float dt)
 {
     sf::Vector2f movement{ 0.f, 0.f };

@@ -136,14 +136,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AttackState.cpp" />
     <ClCompile Include="Bot.cpp" />
+    <ClCompile Include="ChaseState.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AttackState.h" />
     <ClInclude Include="Bot.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="IdleState.h" />
     <ClInclude Include="NpcStates\ChaseState.h" />
     <ClInclude Include="NpcStates\Conditions.h" />
     <ClInclude Include="NpcStates\NpcContext.h" />
