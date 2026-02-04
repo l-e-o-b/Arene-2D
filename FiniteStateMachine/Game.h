@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "Bot.h"
-
+#include "map.h"
 class Game
 {
 public:
@@ -21,4 +21,6 @@ private:
 
     Bot aggressiveBot;
     Bot zoneBot;
+    Map map;
+
 };

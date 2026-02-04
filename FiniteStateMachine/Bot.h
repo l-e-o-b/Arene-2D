@@ -33,9 +33,20 @@ public:
     bool canAttack() const;
     void startAttackCooldown();
 
+    void resetHit();
+    bool canBeHit() const;
+    void setHit();
+    bool checkHit(const sf::CircleShape& atkCircle) const;
+    void clampToMap(const sf::FloatRect& bounds);
+    int gethp();
+    int getdmg();
+    void sethp(int new_hp);
 private:
     // --- Partie JEU ---
     sf::RectangleShape shape;
+    int hp;
+    int dmg;
+    bool damaged;
     BotType type;
 
     // --- Partie IA ---

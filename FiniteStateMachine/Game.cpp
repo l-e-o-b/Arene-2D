@@ -1,5 +1,5 @@
+#include <iostream>
 #include "Game.h"
-
 Game::Game()
     : window(sf::VideoMode{ sf::Vector2u{800, 600} }, "Mini Arene 2D")
     , aggressiveBot({ 200.f, 300.f }, BotType::Aggressive)
@@ -22,6 +22,32 @@ void Game::run()
         update(dt);
 
         render();
+        if (zoneBot.gethp() > 0 &&
+            player.isAttacking() &&
+            zoneBot.canBeHit() &&
+            zoneBot.checkHit(player.getAtkCircle()))
+        {
+            zoneBot.sethp(zoneBot.gethp() - player.getdmg());
+            std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
+            zoneBot.setHit();
+        }
+        if (!player.isAttacking()) {
+            zoneBot.resetHit();
+            
+        }
+        if (aggressiveBot.gethp() > 0 &&
+            player.isAttacking() &&
+            aggressiveBot.canBeHit() &&
+            aggressiveBot.checkHit(player.getAtkCircle()))
+        {
+            aggressiveBot.sethp(aggressiveBot.gethp() - player.getdmg());
+            std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
+            aggressiveBot.setHit();
+        }
+        if (!player.isAttacking()) {
+            aggressiveBot.resetHit();
+
+        }
     }
 }
 
@@ -39,14 +65,17 @@ void Game::processEvents()
 
 void Game::update(float dt)
 {
+    auto bounds = map.getInnerBounds();
     player.update(dt);
-    player.clampToWindow(window.getSize());
+    player.clampToMap(bounds);
 
     aggressiveBot.getContext().playerPosition = player.getPosition();
     zoneBot.getContext().playerPosition = player.getPosition();
 
     aggressiveBot.Update(dt);
+    aggressiveBot.clampToMap(bounds);
     zoneBot.Update(dt);
+    zoneBot.clampToMap(bounds);
 }
 
 void Game::render()
@@ -54,9 +83,11 @@ void Game::render()
     window.clear(sf::Color(30, 30, 30));
 
     player.render(window);
-    aggressiveBot.Render(window);
-    zoneBot.Render(window);
-
+    if (aggressiveBot.gethp() > 0)
+        aggressiveBot.Render(window);
+    if (zoneBot.gethp() > 0)
+        zoneBot.Render(window);
+    map.render(window);
     window.display();
 }
 
