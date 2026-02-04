@@ -36,6 +36,9 @@
     <ClCompile Include="ChaseState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Conditions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NpcStates\PatrolState.h">

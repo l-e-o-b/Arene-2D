@@ -14,5 +14,6 @@ public:
     sf::Vector2f playerPosition;
 
     float detectionRadius = 200.f;
-    float attackRange = 40.f;
+    float attackRange = 40.f;  
+
 };

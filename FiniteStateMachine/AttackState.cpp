@@ -3,8 +3,14 @@
 
 void AttackState::Enter(NpcContext ctx)
 {
-    // plus tard : animation, son, cooldown
+    if (ctx.bot && ctx.bot->canAttack())
+    {
+        std::cout << "ATTACK !" << std::endl;
+        ctx.bot->startAttackCooldown();
+    }
 }
+
+
 
 void AttackState::Execute(NpcContext ctx)
 {

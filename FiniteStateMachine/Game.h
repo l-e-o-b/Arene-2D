@@ -18,5 +18,7 @@ private:
     sf::Clock clock;
 
     Player player;
-    Bot bot;   
+
+    Bot aggressiveBot;
+    Bot zoneBot;
 };

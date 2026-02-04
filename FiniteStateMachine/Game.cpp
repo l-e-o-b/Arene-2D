@@ -2,10 +2,13 @@
 
 Game::Game()
     : window(sf::VideoMode{ sf::Vector2u{800, 600} }, "Mini Arene 2D")
-    , bot(sf::Vector2f{ 600.f, 300.f }, BotType::Aggressive)
+    , aggressiveBot({ 200.f, 300.f }, BotType::Aggressive)
+    , zoneBot({ 600.f, 300.f }, BotType::ZoneGuard)
 {
     window.setFramerateLimit(60);
-    bot.Init();
+
+    aggressiveBot.Init();
+    zoneBot.Init();
 }
 
 
@@ -38,16 +41,22 @@ void Game::update(float dt)
 {
     player.update(dt);
     player.clampToWindow(window.getSize());
-    bot.Update(dt);
 
-    bot.getContext().playerPosition = player.getPosition();
+    aggressiveBot.getContext().playerPosition = player.getPosition();
+    zoneBot.getContext().playerPosition = player.getPosition();
 
+    aggressiveBot.Update(dt);
+    zoneBot.Update(dt);
 }
 
 void Game::render()
 {
     window.clear(sf::Color(30, 30, 30));
+
     player.render(window);
-    bot.Render(window);
+    aggressiveBot.Render(window);
+    zoneBot.Render(window);
+
     window.display();
 }
+

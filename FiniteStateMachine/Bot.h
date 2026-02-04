@@ -30,6 +30,8 @@ public:
     NpcContext& getContext();
     BotType getType() const;
     void move(const sf::Vector2f& direction, float dt);
+    bool canAttack() const;
+    void startAttackCooldown();
 
 private:
     // --- Partie JEU ---
@@ -41,4 +43,6 @@ private:
     NpcContext context{};
     float speed = 120.f;
 
+    float attackCooldown = 1.0f;
+    float attackTimer = 0.0f;
 };

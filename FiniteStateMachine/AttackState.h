@@ -1,6 +1,7 @@
 #pragma once
 #include "StateMachine/State.h"
 #include "NpcStates/NpcContext.h"
+#include "Bot.h"
 
 class AttackState : public FSM::State<NpcContext>
 {

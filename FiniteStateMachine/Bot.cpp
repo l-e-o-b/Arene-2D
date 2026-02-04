@@ -11,6 +11,17 @@ Bot::Bot(const sf::Vector2f& startPos, BotType type)
     context.bot = this;
 }
 
+void Bot::startAttackCooldown()
+{
+    attackTimer = attackCooldown;
+}
+
+bool Bot::canAttack() const
+{
+    return attackTimer <= 0.f;
+}
+
+
 void Bot::move(const sf::Vector2f& direction, float dt)
 {
     shape.move(direction * speed * dt);
@@ -58,21 +69,25 @@ void Bot::Init()
     }
 
     // --- Transitions Chase → Attack ---
-    chase->AddTransition(Conditions::CanMeleeAttack, attack);
+    chase->AddTransition(Conditions::CanEnterAttack, attack);
 
     // --- Attack → Chase ---
     attack->AddTransition(
-        [](const NpcContext& ctx)
+        [](const NpcContext&)
         {
-            return !Conditions::CanMeleeAttack(ctx);
+            return true; // sortie immédiate
         },
         chase
     );
     fsm.Init(idle, context);
 }
 
-void Bot::Update(float)
+void Bot::Update(float dt)
 {
+    // Mise à jour du timer d’attaque
+    if (attackTimer > 0.f)
+        attackTimer -= dt;
+
     context.BotPosition = shape.getPosition();
     fsm.Update(context);
 }
