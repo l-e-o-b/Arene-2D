@@ -13,7 +13,7 @@ private:
     void processEvents();
     void update(float dt);
     void render();
-    void player_enemy(Bot bot);
+    void player_enemy(Bot& bot);
     sf::RenderWindow window;
     sf::Clock clock;
 
