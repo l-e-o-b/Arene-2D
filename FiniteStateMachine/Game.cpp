@@ -35,6 +35,19 @@ void Game::run()
             zoneBot.resetHit();
             
         }
+        if (aggressiveBot.gethp() > 0 &&
+            player.isAttacking() &&
+            aggressiveBot.canBeHit() &&
+            aggressiveBot.checkHit(player.getAtkCircle()))
+        {
+            aggressiveBot.sethp(aggressiveBot.gethp() - player.getdmg());
+            std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
+            aggressiveBot.setHit();
+        }
+        if (!player.isAttacking()) {
+            aggressiveBot.resetHit();
+
+        }
     }
 }
 
@@ -67,8 +80,8 @@ void Game::render()
     window.clear(sf::Color(30, 30, 30));
 
     player.render(window);
-    aggressiveBot.Render(window);
-
+    if (aggressiveBot.gethp() > 0)
+        aggressiveBot.Render(window);
     if (zoneBot.gethp() > 0)
         zoneBot.Render(window);
     window.display();
