@@ -1,37 +1,95 @@
-#include "Bot.h"
+ï»¿#include "Bot.h"
 
-Bot::Bot(const sf::Vector2f& startPos)
+Bot::Bot(const sf::Vector2f& startPos, BotType type)
+    : type(type)
 {
     shape.setSize({ 40.f, 40.f });
     shape.setFillColor(sf::Color::Red);
     shape.setOrigin(shape.getSize() / 2.f);
     shape.setPosition(startPos);
 
-    // FSM pas encore initialisée
+    context.bot = this;
 }
+
+void Bot::startAttackCooldown()
+{
+    attackTimer = attackCooldown;
+}
+
+bool Bot::canAttack() const
+{
+    return attackTimer <= 0.f;
+}
+
+
+void Bot::move(const sf::Vector2f& direction, float dt)
+{
+    shape.move(direction * speed * dt);
+}
+
+
+const sf::Vector2f& Bot::getPosition() const
+{
+    return shape.getPosition();
+}
+
+NpcContext& Bot::getContext()
+{
+    return context;
+}
+
+BotType Bot::getType() const
+{
+    return type;
+}
+
 
 void Bot::Init()
 {
-    PatrolState* patrolState = fsm.CreateState<PatrolState>();
-    ChaseState* chaseState = fsm.CreateState<ChaseState>();
+    auto* idle = fsm.CreateState<IdleState>();
+    auto* chase = fsm.CreateState<ChaseState>();
+    auto* attack = fsm.CreateState<AttackState>();
 
-    patrolState->AddTransition(Conditions::IsSeeingPlayer, chaseState);
+    // --- Transitions Idle â†’ Chase ---
+    if (type == BotType::Aggressive)
+    {
+        idle->AddTransition(Conditions::AlwaysTrue, chase);
+    }
+    else // ZoneGuard
+    {
+        idle->AddTransition(Conditions::IsSeeingPlayer, chase);
 
-    chaseState->AddTransition(
-        [](const NpcContext& context)
+        chase->AddTransition(
+            [](const NpcContext& ctx)
+            {
+                return !Conditions::IsSeeingPlayer(ctx);
+            },
+            idle
+        );
+    }
+
+    // --- Transitions Chase â†’ Attack ---
+    chase->AddTransition(Conditions::CanEnterAttack, attack);
+
+    // --- Attack â†’ Chase ---
+    attack->AddTransition(
+        [](const NpcContext&)
         {
-            return !Conditions::IsSeeingPlayer(context);
+            return true; // sortie immÃ©diate
         },
-        patrolState
+        chase
     );
-
-    fsm.Init(patrolState, context);
+    fsm.Init(idle, context);
 }
 
-void Bot::Update(float)
+void Bot::Update(float dt)
 {
-    // FSM désactivée pour l’instant
-    // fsm.Update(context);
+    // Mise Ã  jour du timer dâ€™attaque
+    if (attackTimer > 0.f)
+        attackTimer -= dt;
+
+    context.BotPosition = shape.getPosition();
+    fsm.Update(context);
 }
 
 void Bot::Render(sf::RenderWindow& window)
