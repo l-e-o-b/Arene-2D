@@ -17,6 +17,8 @@ public:
     int gethp();
     int getdmg();
     void sethp(int new_hp);
+    const sf::Vector2f& getPosition() const;
+
 private:
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;

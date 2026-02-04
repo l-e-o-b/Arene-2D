@@ -2,9 +2,13 @@
 #include "Game.h"
 Game::Game()
     : window(sf::VideoMode{ sf::Vector2u{800, 600} }, "Mini Arene 2D")
-    , bot(sf::Vector2f{ 600.f, 300.f })
+    , aggressiveBot({ 200.f, 300.f }, BotType::Aggressive)
+    , zoneBot({ 600.f, 300.f }, BotType::ZoneGuard)
 {
     window.setFramerateLimit(60);
+
+    aggressiveBot.Init();
+    zoneBot.Init();
 }
 
 
@@ -50,15 +54,24 @@ void Game::update(float dt)
 {
     player.update(dt);
     player.clampToWindow(window.getSize());
-    bot.Update(dt);
 
+    aggressiveBot.getContext().playerPosition = player.getPosition();
+    zoneBot.getContext().playerPosition = player.getPosition();
+
+    aggressiveBot.Update(dt);
+    zoneBot.Update(dt);
 }
 
 void Game::render()
 {
     window.clear(sf::Color(30, 30, 30));
+
     player.render(window);
+    aggressiveBot.Render(window);
+    zoneBot.Render(window);
+
     if (bot.gethp() > 0)
         bot.Render(window);
     window.display();
 }
+

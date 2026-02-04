@@ -1,6 +1,7 @@
-#include "Bot.h"
+﻿#include "Bot.h"
 
-Bot::Bot(const sf::Vector2f& startPos)
+Bot::Bot(const sf::Vector2f& startPos, BotType type)
+    : type(type)
 {
     shape.setSize({ 40.f, 40.f });
     shape.setFillColor(sf::Color::Red);
@@ -9,25 +10,80 @@ Bot::Bot(const sf::Vector2f& startPos)
     hp = 20;
     dmg = 1;
     damaged = false;
-    // FSM pas encore initialis�e
+    // FSM pas encore initialisée
+
+    context.bot = this;
 }
+
+void Bot::startAttackCooldown()
+{
+    attackTimer = attackCooldown;
+}
+
+bool Bot::canAttack() const
+{
+    return attackTimer <= 0.f;
+}
+
+
+void Bot::move(const sf::Vector2f& direction, float dt)
+{
+    shape.move(direction * speed * dt);
+}
+
+
+const sf::Vector2f& Bot::getPosition() const
+{
+    return shape.getPosition();
+}
+
+NpcContext& Bot::getContext()
+{
+    return context;
+}
+
+BotType Bot::getType() const
+{
+    return type;
+}
+
 
 void Bot::Init()
 {
-    PatrolState* patrolState = fsm.CreateState<PatrolState>();
-    ChaseState* chaseState = fsm.CreateState<ChaseState>();
+    auto* idle = fsm.CreateState<IdleState>();
+    auto* chase = fsm.CreateState<ChaseState>();
+    auto* attack = fsm.CreateState<AttackState>();
 
-    patrolState->AddTransition(Conditions::IsSeeingPlayer, chaseState);
+    // --- Transitions Idle → Chase ---
+    if (type == BotType::Aggressive)
+    {
+        idle->AddTransition(Conditions::AlwaysTrue, chase);
+    }
+    else // ZoneGuard
+    {
+        idle->AddTransition(Conditions::IsSeeingPlayer, chase);
 
-    chaseState->AddTransition(
-        [](const NpcContext& context)
+        chase->AddTransition(
+            [](const NpcContext& ctx)
+            {
+                return !Conditions::IsSeeingPlayer(ctx);
+            },
+            idle
+        );
+    }
+
+    // --- Transitions Chase → Attack ---
+    chase->AddTransition(Conditions::CanEnterAttack, attack);
+
+    // --- Attack → Chase ---
+    attack->AddTransition(
+        [](const NpcContext&)
         {
-            return !Conditions::IsSeeingPlayer(context);
+            return true; // sortie immédiate
         },
-        patrolState
+        chase
     );
-
-    fsm.Init(patrolState, context);
+    fsm.Init(idle, context);
 }
 
 bool Bot::checkHit(const sf::CircleShape& atkCircle) const
@@ -70,8 +126,12 @@ void Bot::sethp(int new_hp) {
 }
 void Bot::Update(float)
 {
-    // FSM d�sactiv�e pour l�instant
-    // fsm.Update(context);
+    // Mise à jour du timer d’attaque
+    if (attackTimer > 0.f)
+        attackTimer -= dt;
+
+    context.BotPosition = shape.getPosition();
+    fsm.Update(context);
 }
 
 void Bot::Render(sf::RenderWindow& window)
