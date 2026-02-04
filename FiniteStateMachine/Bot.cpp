@@ -124,7 +124,7 @@ int Bot::getdmg() {
 void Bot::sethp(int new_hp) {
     hp = new_hp;
 }
-void Bot::Update(float)
+void Bot::Update(float dt)
 {
     // Mise à jour du timer d’attaque
     if (attackTimer > 0.f)

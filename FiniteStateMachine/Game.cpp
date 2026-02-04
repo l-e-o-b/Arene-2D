@@ -22,17 +22,17 @@ void Game::run()
         update(dt);
 
         render();
-        if (bot.gethp() > 0 &&
+        if (zoneBot.gethp() > 0 &&
             player.isAttacking() &&
-            bot.canBeHit() &&
-            bot.checkHit(player.getAtkCircle()))
+            zoneBot.canBeHit() &&
+            zoneBot.checkHit(player.getAtkCircle()))
         {
-            bot.sethp(bot.gethp() - player.getdmg());
+            zoneBot.sethp(zoneBot.gethp() - player.getdmg());
             std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
-            bot.setHit();
+            zoneBot.setHit();
         }
         if (!player.isAttacking()) {
-            bot.resetHit();
+            zoneBot.resetHit();
             
         }
     }
@@ -68,10 +68,9 @@ void Game::render()
 
     player.render(window);
     aggressiveBot.Render(window);
-    zoneBot.Render(window);
 
-    if (bot.gethp() > 0)
-        bot.Render(window);
+    if (zoneBot.gethp() > 0)
+        zoneBot.Render(window);
     window.display();
 }
 
