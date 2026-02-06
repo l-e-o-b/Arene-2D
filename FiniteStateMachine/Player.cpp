@@ -43,6 +43,10 @@ sf::RectangleShape& Player::getHitbox()
     return shape;
 }
 
+sf::RectangleShape& Player::getHitbox()
+{
+    return shape;
+}
 
 void Player::update(float dt)
 {
@@ -228,3 +232,13 @@ void Player::render(sf::RenderWindow& window)
 {
     window.draw(sprite);
 }
+
+
+
+
+
+float Player::getCollisionRadius() const
+{
+    return sprite.getGlobalBounds().size.x * 0.4f;
+}
+

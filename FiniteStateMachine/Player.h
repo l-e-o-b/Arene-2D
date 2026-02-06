@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <algorithm>
+#include "Map.h"
+#include <cmath>
 #include <iostream>
 
 
@@ -29,11 +31,13 @@ public:
     void movement(float dt);
     void following_circle(float dt);
     void Attack();
+    float getCollisionRadius() const;
     sf::RectangleShape& getHitbox();
 
 private:
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;
+    sf::Sprite sprite;
 
     float speed;
     float atk_speed;
@@ -58,7 +62,7 @@ private:
     sf::Vector2i frameSize = { 48, 48 };
 
     // --- Animation Walk ---
-    int walkFrameCount = 6;        // adapte au nombre réel de frames
+    int walkFrameCount = 6;        // adapte au nombre rÃ©el de frames
     int currentWalkFrame = 0;
 
     float walkFrameTime = 0.2f;   // plus rapide que l'idle
@@ -69,7 +73,7 @@ private:
     int attackStartRow = 16;
 
     // --- Animation Attack ---
-    int attackFrameCount = 6;      // adapte à ta spritesheet
+    int attackFrameCount = 6;      // adapte Ã  ta spritesheet
     int currentAttackFrame = 0;
 
     float attackFrameTime = 0.12f;
