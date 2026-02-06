@@ -1,15 +1,36 @@
 ﻿#include "Bot.h"
 
 Bot::Bot(const sf::Vector2f& startPos, BotType type)
-    : type(type)
+    : type(type) ,sprite(texture)
 {
-    shape.setSize({ 40.f, 40.f });
-    shape.setFillColor(sf::Color::Red);
+    if (!texture.loadFromFile("Assets/VampIdle.png"))
+    {
+        std::cerr << "Erreur chargement sprite player\n";
+    }
+
+    sprite.setTextureRect(
+        sf::IntRect({ 0, 0 }, frameSize)
+    );
+
+    sprite.setOrigin(
+        { frameSize.x / 2.f, frameSize.y / 2.f }
+    );
+    sprite.setScale({ 1.5f, 1.5f });
+    sprite.setPosition(startPos);
+    shape.setSize({ 32.f, 32.f });
+    shape.setFillColor(sf::Color::Yellow);
     shape.setOrigin(shape.getSize() / 2.f);
     shape.setPosition(startPos);
     hp = 20;
     dmg = 1;
     damaged = false;
+    attacking = false;
+
+    framerowcount = texture.getSize().x / frameSize.x;
+    currentFrame = 0;
+    currentRow = 0;
+    animTimer = sf::Time::Zero;
+    frameDuration = sf::seconds(1.f / framerowcount);
     // FSM pas encore initialisée
 
     context.bot = this;
@@ -30,8 +51,23 @@ void Bot::move(const sf::Vector2f& direction, float dt)
 {
     shape.move(direction * speed * dt);
 }
+sf::RectangleShape& Bot::getHitbox()
+{
+    return shape;
+}
 
 
+void Bot::startAttackAnim()
+{
+    attackAnimFinished = false;
+    currentFrame = 0;
+    animTimer = sf::Time::Zero;
+}
+
+
+void Bot::Attacked() {
+    attacking = true;
+}
 const sf::Vector2f& Bot::getPosition() const
 {
     return shape.getPosition();
@@ -77,9 +113,9 @@ void Bot::Init()
 
     // --- Attack → Chase ---
     attack->AddTransition(
-        [](const NpcContext&)
+        [](const NpcContext& ctx)
         {
-            return true; // sortie immédiate
+            return ctx.bot->isAttackFinished();
         },
         chase
     );
@@ -134,17 +170,66 @@ int Bot::getdmg() {
 void Bot::sethp(int new_hp) {
     hp = new_hp;
 }
+void Bot::setDirection(const sf::Vector2f& dir)
+{
+    if (std::abs(dir.x) > std::abs(dir.y))
+    {
+        currentRow = (dir.x > 0.f) ? 3 : 2; // right : left
+    }
+    else
+    {
+        currentRow = (dir.y > 0.f) ? 0 : 1; // down : up
+    }
+}
+void Bot::setAnimation(const std::string& file)
+{
+    (void)texture.loadFromFile(file);
+    sprite.setTexture(texture);
+
+    framerowcount = texture.getSize().x / frameSize.x;;
+
+    currentFrame = 0;
+    currentRow = 0;
+    frameDuration = sf::seconds(1.f / framerowcount);
+    animTimer = sf::Time::Zero;
+    std::cout << file << " opened";
+}
 void Bot::Update(float dt)
 {
     // Mise à jour du timer d’attaque
     if (attackTimer > 0.f)
         attackTimer -= dt;
 
+    sprite.setPosition(shape.getPosition());
     context.BotPosition = shape.getPosition();
     fsm.Update(context);
+    animTimer += sf::seconds(dt);
+
+    if (animTimer >= frameDuration)
+    {
+        animTimer -= frameDuration;
+        currentFrame++;
+
+        if (attacking && currentFrame >= attackFrameCount)
+        {
+            attackAnimFinished = true;
+            attacking = false;
+            currentFrame = attackFrameCount - 1; // hold last frame
+        }
+        else
+        {
+            currentFrame %= framerowcount;
+        }
+    }
+
+
+    sprite.setTextureRect(sf::IntRect{
+        { currentFrame * frameSize.x, currentRow * frameSize.y },
+        frameSize
+        });
 }
 
 void Bot::Render(sf::RenderWindow& window)
 {
-    window.draw(shape);
+    window.draw(sprite);
 }

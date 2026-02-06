@@ -41,14 +41,33 @@ public:
     int gethp();
     int getdmg();
     void sethp(int new_hp);
+    void setDirection(const sf::Vector2f& dir);
+    void setAnimation(const std::string& file);
+    bool isAttackFinished() const { return attackAnimFinished; }
+    void startAttackAnim();
+    void Attacked();
+    sf::RectangleShape& getHitbox();
+
 private:
     // --- Partie JEU ---
     sf::RectangleShape shape;
     int hp;
     int dmg;
     bool damaged;
+    bool attacking;
+    bool attackAnimFinished = false;
+    int attackFrameCount = 12;
     BotType type;
 
+    // --- Partie Animation ---
+    sf::Sprite sprite;
+    sf::Texture texture;
+    int currentFrame;
+    int currentRow;
+    int framerowcount;
+    sf::Time animTimer;
+    sf::Time frameDuration;
+    sf::Vector2i frameSize{ 64, 64 };
     // --- Partie IA ---
     FSM::StateMachine<NpcContext> fsm;
     NpcContext context{};
