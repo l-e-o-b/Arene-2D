@@ -1,28 +1,34 @@
-#include "Player.h"
-Player::Player()
+﻿#include "Player.h"
+Player::Player():sprite(texture)
 {
-    shape.setSize({ 40.f, 40.f });
-    shape.setFillColor(sf::Color::Cyan);
-    shape.setOrigin(shape.getSize() / 2.f);
-    shape.setPosition({ 400.f, 300.f });
+    if (!texture.loadFromFile("Assets/player.png"))
+    {
+        std::cerr << "Erreur chargement sprite player\n";
+    }
+
+    sprite.setTextureRect(
+        sf::IntRect({ 0, 0 }, frameSize)
+    );
 
     atkCircle.setRadius(60.f);
     atkCircle.setOrigin({ 60.f, 60.f });
     atkCircle.setFillColor(sf::Color::Red);
 
+
     speed = 250.f;
-    atk_speed = 1;
+    atk_speed = 4;
     atk_state = false;
     atkDuration = sf::Time::Zero;
     atkAcc = sf::Time::Zero;
     hp = 20;
     dmg = 2;
+    currentDirection = Direction::Down;
 }
 
 
 const sf::Vector2f& Player::getPosition() const
 {
-    return shape.getPosition();
+    return sprite.getPosition();
 }
 
 sf::RectangleShape& Player::getHitbox()
@@ -43,25 +49,115 @@ void Player::movement(float dt) {
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
         movement.y -= speed;
+        currentDirection = Direction::Up;
+        isMoving = true;
+    }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+    {
         movement.y += speed;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
         movement.x -= speed;
+        currentDirection = Direction::Left;
+        isMoving = true;
+    }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+    {
         movement.x += speed;
+        currentDirection = Direction::Right;
+        isMoving = true;
+    }
 
-    shape.move(movement * dt);
-}
+    int directionRow = 0;
+
+    switch (currentDirection)
+    {
+    case Direction::Down:  directionRow = 0; break;
+    case Direction::Up:  directionRow = 1; break;
+    case Direction::Right:    directionRow = 2; break;
+    case Direction::Left: directionRow = 3; break;
+    }
+
+    float movementLength = std::sqrt(movement.x * movement.x + movement.y * movement.y);
+
+    if (atk_state)
+    {
+        attackTimer += dt;
+
+        if (attackTimer >= attackFrameTime)
+        {
+            attackTimer -= attackFrameTime;
+            currentAttackFrame++;
+
+            int row = attackStartRow + directionRow;
+
+            if (currentAttackFrame >= attackFrameCount)
+            {
+                currentAttackFrame = 0;
+                attackTimer = 0.f;
+                atk_state = false;
+            }
+
+            sprite.setTextureRect(
+                sf::IntRect(
+                    { currentAttackFrame * frameSize.x,
+                      row * frameSize.y },
+                    frameSize
+                )
+            );
+        }
+    }
+    else if (!isMoving)
+    {
+      idleTimer += dt;
+      if (idleTimer >= idleFrameTime)
+      {         
+          idleTimer = 0.f;
+          currentIdleFrame = (currentIdleFrame + 1) % idleFrameCount;    
+          sprite.setTextureRect(      
+          sf::IntRect(
+          { currentIdleFrame * frameSize.x,
+              directionRow * frameSize.y },
+              frameSize)
+          );
+      }
+    }
+    else
+    {
+        walkTimer += dt;
+
+        if (walkTimer >= walkFrameTime)
+        {
+            walkTimer -= walkFrameTime;
+            currentWalkFrame = (currentWalkFrame + 1) % walkFrameCount;
+
+            int row = walkStartRow + directionRow;
+
+            sprite.setTextureRect(
+                sf::IntRect(
+                    { currentWalkFrame * frameSize.x,
+                      row * frameSize.y },
+                    frameSize
+                )
+            );
+        }
+
+        // reset idle pour éviter les sauts
+        idleTimer = 0.f;
+        currentIdleFrame = 0;
+    }
+    sprite.move(movement * dt);
+
 
 void Player::following_circle(float dt){
     atkAcc += sf::seconds(dt);
-    atkCircle.setPosition(shape.getPosition());
-    if (atk_state){
+    if (atk_state)
+    {
+        atkCircle.setPosition(sprite.getPosition());
+
         atkDuration += sf::seconds(dt);
         if (atkDuration >= sf::seconds(0.1f))
         {
-            atk_state = false;
-            atkDuration = sf::Time::Zero;
+            atkDuration = sf::Time::Zero; 
         }
     }
 }
@@ -73,7 +169,9 @@ void Player::Attack() {
 
         if (atkAcc >= interval)
         {
-            atkCircle.setPosition(shape.getPosition());
+            atkCircle.setPosition(sprite.getPosition());
+            currentAttackFrame = 0;
+            attackTimer = 0.f;
             atk_state = true;
             atkAcc -= interval;
         }
@@ -110,5 +208,5 @@ void Player::clampToMap(const sf::FloatRect& bounds)
 
 void Player::render(sf::RenderWindow& window)
 {
-    window.draw(shape);
+    window.draw(sprite);
 }
