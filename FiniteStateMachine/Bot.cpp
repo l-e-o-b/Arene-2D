@@ -192,7 +192,6 @@ void Bot::setAnimation(const std::string& file)
     currentRow = 0;
     frameDuration = sf::seconds(1.f / framerowcount);
     animTimer = sf::Time::Zero;
-    std::cout << file << " opened";
 }
 void Bot::Update(float dt)
 {

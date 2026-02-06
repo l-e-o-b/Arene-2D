@@ -30,14 +30,13 @@ public:
     const sf::Vector2f& getPosition() const;
     void movement(float dt);
     void following_circle(float dt);
-    void Attack();
+    void Attack(float dt);
     float getCollisionRadius() const;
     sf::RectangleShape& getHitbox();
 
 private:
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;
-    sf::Sprite sprite;
 
     float speed;
     float atk_speed;

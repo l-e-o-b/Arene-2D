@@ -43,17 +43,12 @@ sf::RectangleShape& Player::getHitbox()
     return shape;
 }
 
-sf::RectangleShape& Player::getHitbox()
-{
-    return shape;
-}
-
 void Player::update(float dt)
 {
     shape.setPosition(sprite.getPosition());
     movement(dt);
     following_circle(dt);
-    Attack();
+    Attack(dt);
 }
 
 void Player::movement(float dt) {
@@ -165,11 +160,9 @@ void Player::movement(float dt) {
     sprite.move(movement * dt);
 }
 void Player::following_circle(float dt) {
-    atkAcc += sf::seconds(dt);
+    atkCircle.setPosition(sprite.getPosition());
     if (atk_state)
     {
-        atkCircle.setPosition(sprite.getPosition());
-
         atkDuration += sf::seconds(dt);
         if (atkDuration >= sf::seconds(0.1f))
         {
@@ -178,15 +171,14 @@ void Player::following_circle(float dt) {
     }
 }
 
-void Player::Attack() {
+void Player::Attack(float dt) {
+    atkAcc += sf::seconds(dt);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
     {
         sf::Time interval = sf::seconds(1.f / atk_speed);
 
         if (atkAcc >= interval)
         {
-            atkCircle.setPosition(shape.getPosition());
-            currentAttackFrame = 0;
             attackTimer = 0.f;
             atk_state = true;
             atkAcc -= interval;
@@ -230,12 +222,9 @@ void Player::clampToMap(const sf::FloatRect& bounds)
 
 void Player::render(sf::RenderWindow& window)
 {
+    window.draw(atkCircle);
     window.draw(sprite);
 }
-
-
-
-
 
 float Player::getCollisionRadius() const
 {
