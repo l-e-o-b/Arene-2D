@@ -10,15 +10,9 @@ Player::Player():sprite(texture)
         sf::IntRect({ 0, 0 }, frameSize)
     );
 
-    sprite.setOrigin(
-        { frameSize.x / 2.f, frameSize.y / 2.f }
-    );
-    sprite.setScale({2.f, 2.f});
-    sprite.setPosition({400.f, 300.f});
-    
-    atkCircle.setRadius(40.f);
-    atkCircle.setOrigin({ 40.f, 40.f });
-    atkCircle.setFillColor(sf::Color::Transparent);
+    atkCircle.setRadius(60.f);
+    atkCircle.setOrigin({ 60.f, 60.f });
+    atkCircle.setFillColor(sf::Color::Red);
 
 
     speed = 250.f;
@@ -37,15 +31,23 @@ const sf::Vector2f& Player::getPosition() const
     return sprite.getPosition();
 }
 
+sf::RectangleShape& Player::getHitbox()
+{
+    return shape;
+}
+
 
 void Player::update(float dt)
 {
+    movement(dt);
+    following_circle(dt);
+    Attack();
+}
+
+void Player::movement(float dt) {
     sf::Vector2f movement{ 0.f, 0.f };
 
-    bool isMoving = false;
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
         movement.y -= speed;
         currentDirection = Direction::Up;
         isMoving = true;
@@ -53,11 +55,7 @@ void Player::update(float dt)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
     {
         movement.y += speed;
-        currentDirection = Direction::Down;
-        isMoving = true;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
-    {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
         movement.x -= speed;
         currentDirection = Direction::Left;
         isMoving = true;
@@ -150,6 +148,7 @@ void Player::update(float dt)
     sprite.move(movement * dt);
 
 
+void Player::following_circle(float dt){
     atkAcc += sf::seconds(dt);
     if (atk_state)
     {
@@ -161,8 +160,10 @@ void Player::update(float dt)
             atkDuration = sf::Time::Zero; 
         }
     }
+}
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && !atk_state)
+void Player::Attack() {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
     {
         sf::Time interval = sf::seconds(1.f / atk_speed);
 
