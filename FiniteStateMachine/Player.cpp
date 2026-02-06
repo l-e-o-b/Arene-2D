@@ -151,14 +151,13 @@ void Player::update(float dt)
 
 
     atkAcc += sf::seconds(dt);
-    if (atk_state && canDealDamage)
+    if (atk_state)
     {
         atkCircle.setPosition(sprite.getPosition());
 
         atkDuration += sf::seconds(dt);
         if (atkDuration >= sf::seconds(0.1f))
         {
-            canDealDamage = false;
             atkDuration = sf::Time::Zero; 
         }
     }
@@ -171,7 +170,6 @@ void Player::update(float dt)
         {
             atkCircle.setPosition(sprite.getPosition());
             currentAttackFrame = 0;
-            canDealDamage = true;
             attackTimer = 0.f;
             atk_state = true;
             atkAcc -= interval;

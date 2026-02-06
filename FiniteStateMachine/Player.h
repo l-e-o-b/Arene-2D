@@ -40,7 +40,6 @@ private:
     sf::Time atkDuration;
     int hp;
     int dmg;
-    bool canDealDamage;
 
     sf::Texture texture;
     sf::Sprite sprite;
