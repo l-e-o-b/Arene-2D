@@ -5,9 +5,11 @@
 
 namespace NpcAi
 {
-    void ChaseState::Enter(NpcContext)
+    void ChaseState::Enter(NpcContext _context)
     {
         std::cout << "Enter Chase State" << std::endl;
+        _context.bot->setAnimation("Assets/VampChase.png");
+
     }
 
     void ChaseState::Execute(NpcContext _context)
@@ -21,6 +23,7 @@ namespace NpcAi
         if (length > 0.f)
             direction /= length;
 
+        _context.bot->setDirection(direction);
         _context.bot->move(direction, 1.f / 60.f);
     }
 

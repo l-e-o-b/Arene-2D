@@ -20,6 +20,8 @@ public:
     void movement(float dt);
     void following_circle(float dt);
     void Attack();
+    sf::RectangleShape& getHitbox();
+
 private:
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;

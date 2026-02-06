@@ -23,19 +23,7 @@ void Game::run()
 
         render();
         player_enemy(zoneBot);
-        if (aggressiveBot.gethp() > 0 &&
-            player.isAttacking() &&
-            aggressiveBot.canBeHit() &&
-            aggressiveBot.checkHit(player.getAtkCircle()))
-        {
-            aggressiveBot.sethp(aggressiveBot.gethp() - player.getdmg());
-            std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
-            aggressiveBot.setHit();
-        }
-        if (!player.isAttacking()) {
-            aggressiveBot.resetHit();
-
-        }
+        player_enemy(aggressiveBot);
     }
 }
 
@@ -54,6 +42,43 @@ void Game::player_enemy(Bot& bot) {
 
     }
 }
+
+void resolveRectCollision(
+    sf::RectangleShape& a,
+    sf::RectangleShape& b
+)
+{
+    sf::FloatRect ra = a.getGlobalBounds();
+    sf::FloatRect rb = b.getGlobalBounds();
+
+    if (!ra.findIntersection(rb))
+        return;
+
+    sf::Vector2f diff = a.getPosition() - b.getPosition();
+    float length = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+    if (length == 0.f)
+        return;
+
+    sf::Vector2f normal = diff / length;
+
+    float overlapX = (ra.size.x / 2.f + rb.size.x / 2.f) - std::abs(diff.x);
+    float overlapY = (ra.size.y / 2.f + rb.size.y / 2.f) - std::abs(diff.y);
+
+    if (overlapX <= 0.f || overlapY <= 0.f)
+        return;
+
+    if (overlapX < overlapY)
+    {
+        a.move({ normal.x * overlapX * 0.5f, 0.f });
+        b.move({ -normal.x * overlapX * 0.5f, 0.f });
+    }
+    else
+    {
+        a.move({ 0.f, normal.y * overlapY * 0.5f });
+        b.move({ 0.f, -normal.y * overlapY * 0.5f });
+    }
+}
+
 
 void Game::processEvents()
 {
@@ -79,12 +104,15 @@ void Game::update(float dt)
         aggressiveBot.clampToMap(bounds);
     }
 
-    if (aggressiveBot.gethp() > 0) {
+    if (zoneBot.gethp() > 0) {
         zoneBot.getContext().playerPosition = player.getPosition();
         zoneBot.Update(dt);
         zoneBot.clampToMap(bounds);
     }
-    
+    resolveRectCollision(player.getHitbox(), aggressiveBot.getHitbox());
+    resolveRectCollision(player.getHitbox(), zoneBot.getHitbox());
+    resolveRectCollision(aggressiveBot.getHitbox(), zoneBot.getHitbox());
+
 }
 
 void Game::render()

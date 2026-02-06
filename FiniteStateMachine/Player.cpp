@@ -6,9 +6,9 @@ Player::Player()
     shape.setOrigin(shape.getSize() / 2.f);
     shape.setPosition({ 400.f, 300.f });
 
-    atkCircle.setRadius(40.f);
-    atkCircle.setOrigin({ 40.f, 40.f });
-    atkCircle.setFillColor(sf::Color::Transparent);
+    atkCircle.setRadius(60.f);
+    atkCircle.setOrigin({ 60.f, 60.f });
+    atkCircle.setFillColor(sf::Color::Red);
 
     speed = 250.f;
     atk_speed = 1;
@@ -25,6 +25,11 @@ const sf::Vector2f& Player::getPosition() const
     return shape.getPosition();
 }
 
+sf::RectangleShape& Player::getHitbox()
+{
+    return shape;
+}
+
 
 void Player::update(float dt)
 {
@@ -36,11 +41,11 @@ void Player::update(float dt)
 void Player::movement(float dt) {
     sf::Vector2f movement{ 0.f, 0.f };
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
         movement.y -= speed;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
         movement.y += speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
         movement.x -= speed;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         movement.x += speed;
@@ -50,10 +55,8 @@ void Player::movement(float dt) {
 
 void Player::following_circle(float dt){
     atkAcc += sf::seconds(dt);
-    if (atk_state)
-    {
-        atkCircle.setPosition(shape.getPosition());
-
+    atkCircle.setPosition(shape.getPosition());
+    if (atk_state){
         atkDuration += sf::seconds(dt);
         if (atkDuration >= sf::seconds(0.1f))
         {
