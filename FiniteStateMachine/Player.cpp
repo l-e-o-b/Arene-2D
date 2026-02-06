@@ -9,6 +9,13 @@ Player::Player():sprite(texture)
     sprite.setTextureRect(
         sf::IntRect({ 0, 0 }, frameSize)
     );
+    sprite.setScale({ 2.f, 2.f });
+    sprite.setOrigin({ 24.f ,24.f });
+    sprite.setPosition({ 400.f, 300.f });
+    shape.setSize({ 40.f, 40.f });
+    shape.setFillColor(sf::Color::Cyan);
+    shape.setOrigin(shape.getSize() / 2.f);
+    shape.setPosition({ 400.f, 300.f });
 
     atkCircle.setRadius(60.f);
     atkCircle.setOrigin({ 60.f, 60.f });
@@ -39,6 +46,7 @@ sf::RectangleShape& Player::getHitbox()
 
 void Player::update(float dt)
 {
+    shape.setPosition(sprite.getPosition());
     movement(dt);
     following_circle(dt);
     Attack();
@@ -47,7 +55,9 @@ void Player::update(float dt)
 void Player::movement(float dt) {
     sf::Vector2f movement{ 0.f, 0.f };
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
+    bool isMoving = false;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
         movement.y -= speed;
         currentDirection = Direction::Up;
         isMoving = true;
@@ -55,7 +65,10 @@ void Player::movement(float dt) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
     {
         movement.y += speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+        currentDirection = Direction::Down;
+        isMoving = true;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
         movement.x -= speed;
         currentDirection = Direction::Left;
         isMoving = true;
@@ -108,18 +121,18 @@ void Player::movement(float dt) {
     }
     else if (!isMoving)
     {
-      idleTimer += dt;
-      if (idleTimer >= idleFrameTime)
-      {         
-          idleTimer = 0.f;
-          currentIdleFrame = (currentIdleFrame + 1) % idleFrameCount;    
-          sprite.setTextureRect(      
-          sf::IntRect(
-          { currentIdleFrame * frameSize.x,
-              directionRow * frameSize.y },
-              frameSize)
-          );
-      }
+        idleTimer += dt;
+        if (idleTimer >= idleFrameTime)
+        {
+            idleTimer = 0.f;
+            currentIdleFrame = (currentIdleFrame + 1) % idleFrameCount;
+            sprite.setTextureRect(
+                sf::IntRect(
+                    { currentIdleFrame * frameSize.x,
+                        directionRow * frameSize.y },
+                    frameSize)
+            );
+        }
     }
     else
     {
@@ -146,9 +159,8 @@ void Player::movement(float dt) {
         currentIdleFrame = 0;
     }
     sprite.move(movement * dt);
-
-
-void Player::following_circle(float dt){
+}
+void Player::following_circle(float dt) {
     atkAcc += sf::seconds(dt);
     if (atk_state)
     {
@@ -157,7 +169,7 @@ void Player::following_circle(float dt){
         atkDuration += sf::seconds(dt);
         if (atkDuration >= sf::seconds(0.1f))
         {
-            atkDuration = sf::Time::Zero; 
+            atkDuration = sf::Time::Zero;
         }
     }
 }
@@ -169,7 +181,7 @@ void Player::Attack() {
 
         if (atkAcc >= interval)
         {
-            atkCircle.setPosition(sprite.getPosition());
+            atkCircle.setPosition(shape.getPosition());
             currentAttackFrame = 0;
             attackTimer = 0.f;
             atk_state = true;
@@ -204,6 +216,12 @@ void Player::clampToMap(const sf::FloatRect& bounds)
     pos.y = std::clamp(pos.y, (bounds.position.y + half.y), bounds.position.y + (bounds.size.y - half.y));
 
     shape.setPosition(pos);
+    sf::Vector2f pos1 = sprite.getPosition();
+
+    pos1.x = std::clamp(pos1.x, (bounds.position.x + 24.f), bounds.position.x + (bounds.size.x - 24.f));
+    pos1.y = std::clamp(pos1.y, (bounds.position.y + 24.f), bounds.position.y + (bounds.size.y - 24.f));
+
+    sprite.setPosition(pos1);
 }
 
 void Player::render(sf::RenderWindow& window)
