@@ -1,5 +1,5 @@
 #include "Player.h"
-Player::Player()
+Player::Player(): sprite(sprite)
 {
     shape.setSize({ 40.f, 40.f });
     shape.setFillColor(sf::Color::Cyan);
@@ -25,6 +25,10 @@ const sf::Vector2f& Player::getPosition() const
     return shape.getPosition();
 }
 
+sf::RectangleShape& Player::getHitbox()
+{
+    return shape;
+}
 
 void Player::update(float dt)
 {
@@ -36,11 +40,11 @@ void Player::update(float dt)
 void Player::movement(float dt) {
     sf::Vector2f movement{ 0.f, 0.f };
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
         movement.y -= speed;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
         movement.y += speed;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
         movement.x -= speed;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         movement.x += speed;
@@ -109,3 +113,13 @@ void Player::render(sf::RenderWindow& window)
 {
     window.draw(shape);
 }
+
+
+
+
+
+float Player::getCollisionRadius() const
+{
+    return sprite.getGlobalBounds().size.x * 0.4f;
+}
+

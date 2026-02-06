@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <algorithm>
+#include "Map.h"
+#include <cmath>
 
 
 class Player
@@ -20,9 +22,13 @@ public:
     void movement(float dt);
     void following_circle(float dt);
     void Attack();
+    float getCollisionRadius() const;
+    sf::RectangleShape& getHitbox();
+
 private:
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;
+    sf::Sprite sprite;
 
     float speed;
     float atk_speed;
@@ -31,4 +37,5 @@ private:
     sf::Time atkDuration;
     int hp;
     int dmg;
+    
 };
