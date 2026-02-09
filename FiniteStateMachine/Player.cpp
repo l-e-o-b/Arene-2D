@@ -45,6 +45,16 @@ sf::RectangleShape& Player::getHitbox()
 
 void Player::update(float dt)
 {
+    if (damaged)
+    {
+        invincibilityTimer += sf::seconds(dt);
+        if (invincibilityTimer >= invincibilityDuration)
+        {
+            damaged = false;
+            invincibilityTimer = sf::Time::Zero;
+        }
+    }
+
     shape.setPosition(sprite.getPosition());
     movement(dt);
     following_circle(dt);
@@ -209,7 +219,7 @@ bool Player::isAttacking() const
 sf::Time Player::getAtkAcc() {
     return atkAcc;
 }
-int Player::getAtkSpeed() {
+float Player::getAtkSpeed() {
     return atk_speed;
 }
 int Player::gethp() {
@@ -249,3 +259,28 @@ float Player::getCollisionRadius() const
     return sprite.getGlobalBounds().size.x * 0.4f;
 }
 
+void Player::takeDamage(int dmg)
+{
+    if (damaged) return;
+
+    hp -= dmg;
+    damaged = true;
+    invincibilityTimer = sf::Time::Zero;
+
+    std::cout << "Player takes " << dmg << " dmg, hp = " << hp << std::endl;
+}
+
+bool Player::canBeHit() const
+{
+    return !damaged;
+}
+
+void Player::setHit()
+{
+    damaged = true;
+}
+
+void Player::resetHit()
+{
+    damaged = false;
+}

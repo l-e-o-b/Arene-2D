@@ -2,13 +2,14 @@
 #include <SFML/System/Vector2.hpp>
 
 class Npc;
-
+class Player;
 class Bot;
 
 class NpcContext
 {
 public:
     Bot* bot = nullptr;
+    Player* player = nullptr;
 
     sf::Vector2f BotPosition;
     sf::Vector2f playerPosition;

@@ -128,6 +128,7 @@ void Game::botupdate(Bot& bot, sf::Rect<float> bounds, float dt) {
         bot.Update(dt);
         bot.clampToMap(bounds);
     }
+    bot.getContext().player = &player;
 }
 
 void Game::update(float dt)
