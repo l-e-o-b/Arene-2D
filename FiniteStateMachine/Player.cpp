@@ -157,7 +157,6 @@ void Player::movement(float dt) {
         idleTimer = 0.f;
         currentIdleFrame = 0;
     }
-    sprite.move(movement * dt);
 }
 void Player::following_circle(float dt) {
     atkCircle.setPosition(sprite.getPosition());
@@ -231,3 +230,23 @@ float Player::getCollisionRadius() const
     return sprite.getGlobalBounds().size.x * 0.4f;
 }
 
+sf::Vector2f Player::getVelocity() const
+{
+    sf::Vector2f velocity{ 0.f, 0.f };
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z))
+        velocity.y -= speed;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+        velocity.y += speed;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+        velocity.x -= speed;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+        velocity.x += speed;
+
+    return velocity;
+}
+
+void Player::syncSpriteToHitbox()
+{
+    sprite.setPosition(shape.getPosition());
+}

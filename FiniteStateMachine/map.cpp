@@ -1,7 +1,7 @@
 #include "map.h"
 #include <iostream>
 
-Map::Map(): obstacleSprite(obstacleTexture), obstacleSprite2(obstacleTexture2) ,obstacleSprite3(obstacleTexture3)
+Map::Map()
 {
     float radius = 21.f;
     const float thickness = 20.f;
@@ -23,78 +23,17 @@ Map::Map(): obstacleSprite(obstacleTexture), obstacleSprite2(obstacleTexture2) ,
     left.setFillColor(sf::Color::White);
     right.setFillColor(sf::Color::White);
 
-    // Barrel 1
-    sf::CircleShape b1(radius);
-    b1.setOrigin({ radius, radius });
-    b1.setPosition({ 420.f, 320.f });
-    b1.setFillColor(sf::Color::White);
-    obstacleColliders.push_back(b1);
 
-    // Barrel 2
-    sf::CircleShape b2(radius);
-    b2.setOrigin({ radius, radius });
-    b2.setPosition({ 320.f, 170.f });
-    b2.setFillColor(sf::Color::White);
-    obstacleColliders.push_back(b2);
-
-    // Barrel 3
-    sf::CircleShape b3(radius);
-    b3.setOrigin({ radius, radius });
-    b3.setPosition({ 120.f, 220.f });
-    b3.setFillColor(sf::Color::White);
-    obstacleColliders.push_back(b3);
-
-    if (!obstacleTexture.loadFromFile("Assets/Barrel1.png"))
+    if (!barrelTexture.loadFromFile("Assets/Barrel1.png"))
     {
-        // debug simple
-        std::cerr << "Erreur chargement obstacle\n";
+        std::cerr << "Erreur chargement barrel\n";
     }
-    obstacleTexture.setSmooth(false); // pixel art
-
-    obstacleSprite.setTextureRect(
-        sf::IntRect({ 0, 0 }, { 256, 256 }) 
-    );
-
-    obstacleSprite.setOrigin({ 24.f, 24.f });
-    obstacleSprite.setScale({ 0.2f, 0.2f });
-
-    obstacleSprite.setPosition({ 400.f, 300.f });
+    barrelTexture.setSmooth(false);
 
 
-
-    if (!obstacleTexture2.loadFromFile("Assets/Barrel1.png"))
-    {
-        // debug simple
-        std::cerr << "Erreur chargement obstacle\n";
-    }
-    obstacleTexture2.setSmooth(false); // pixel art
-
-    obstacleSprite2.setTextureRect(
-        sf::IntRect({ 0, 0 }, { 256, 256 })
-    );
-
-    obstacleSprite2.setOrigin({ 24.f, 24.f });
-    obstacleSprite2.setScale({ 0.2f, 0.2f });
-
-    obstacleSprite2.setPosition({ 300.f, 150.f });
-
-
-
-    if (!obstacleTexture3.loadFromFile("Assets/Barrel1.png"))
-    {
-        // debug simple
-        std::cerr << "Erreur chargement obstacle\n";
-    }
-    obstacleTexture3.setSmooth(false); // pixel art
-
-    obstacleSprite3.setTextureRect(
-        sf::IntRect({ 0, 0 }, { 256, 256 })
-    );
-
-    obstacleSprite3.setOrigin({ 24.f, 24.f });
-    obstacleSprite3.setScale({ 0.2f, 0.2f });
-
-    obstacleSprite3.setPosition({ 100.f, 200.f });
+    barrels.emplace_back(sf::Vector2f{ 420.f, 320.f }, barrelTexture);
+    barrels.emplace_back(sf::Vector2f{ 320.f, 170.f }, barrelTexture);
+    barrels.emplace_back(sf::Vector2f{ 120.f, 220.f }, barrelTexture);
 
 }
 
@@ -104,9 +43,9 @@ void Map::render(sf::RenderWindow& window)
     window.draw(bottom);
     window.draw(left);
     window.draw(right);
-    window.draw(obstacleSprite);
-    window.draw(obstacleSprite2);
-    window.draw(obstacleSprite3);
+
+    for (const auto& barrel : barrels)
+        barrel.render(window);
 }
 
 
@@ -124,7 +63,7 @@ sf::FloatRect Map::getInnerBounds() const
 }
 
 
-const std::vector<sf::CircleShape>& Map::getObstacleColliders() const
+const std::vector<Barrel>& Map::getBarrels() const
 {
-    return obstacleColliders;
+    return barrels;
 }

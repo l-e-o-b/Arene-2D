@@ -33,8 +33,11 @@ public:
     void Attack(float dt);
     float getCollisionRadius() const;
     sf::RectangleShape& getHitbox();
+    void syncSpriteToHitbox();
+    sf::Vector2f getVelocity() const;
 
 private:
+
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;
 

@@ -1,5 +1,6 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include "Barrel.h"
+#include <vector>
 
 class Map
 {
@@ -7,16 +8,12 @@ public:
     Map();
     void render(sf::RenderWindow& window);
     sf::FloatRect getInnerBounds() const;
-    const std::vector<sf::CircleShape>& getObstacleColliders() const;
+    const std::vector<Barrel>& getBarrels() const;
 
 private:
-    sf::RectangleShape top, bottom, left, right;
-    std::vector<sf::CircleShape> obstacleColliders;
-    sf::Texture obstacleTexture;
-    sf::Sprite obstacleSprite;
-    sf::Texture obstacleTexture2;
-    sf::Sprite obstacleSprite2;
-    sf::Texture obstacleTexture3;
-    sf::Sprite obstacleSprite3;
+    sf::Texture barrelTexture;
+    std::vector<Barrel> barrels;
 
+    sf::RectangleShape top, bottom, left, right;
 };
+

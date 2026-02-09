@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AttackState.cpp" />
+    <ClCompile Include="Barrel.cpp" />
     <ClCompile Include="Bot.cpp" />
     <ClCompile Include="ChaseState.cpp" />
     <ClCompile Include="Conditions.cpp" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AttackState.h" />
+    <ClInclude Include="Barrel.h" />
     <ClInclude Include="Bot.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="IdleState.h" />
