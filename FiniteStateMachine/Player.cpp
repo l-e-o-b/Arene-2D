@@ -48,7 +48,9 @@ void Player::update(float dt)
     shape.setPosition(sprite.getPosition());
     movement(dt);
     following_circle(dt);
-    Attack(dt);
+    if (!atk_state) {
+        Attack(dt);
+    }
 }
 
 void Player::movement(float dt) {
@@ -58,28 +60,35 @@ void Player::movement(float dt) {
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
         movement.y -= speed;
-        currentDirection = Direction::Up;
         isMoving = true;
+        if (!atk_state) {
+            currentDirection = Direction::Up;
+        }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
     {
         movement.y += speed;
-        currentDirection = Direction::Down;
         isMoving = true;
+        if (!atk_state) {
+            currentDirection = Direction::Down;
+        }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
         movement.x -= speed;
-        currentDirection = Direction::Left;
         isMoving = true;
+        if (!atk_state) {
+            currentDirection = Direction::Left;
+        }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
     {
         movement.x += speed;
-        currentDirection = Direction::Right;
         isMoving = true;
+        if (!atk_state) {
+            currentDirection = Direction::Right;
+        }
     }
 
-    int directionRow = 0;
 
     switch (currentDirection)
     {
@@ -107,6 +116,7 @@ void Player::movement(float dt) {
                 currentAttackFrame = 0;
                 attackTimer = 0.f;
                 atk_state = false;
+                atkAcc = sf::seconds(0);
             }
 
             sprite.setTextureRect(
@@ -118,6 +128,7 @@ void Player::movement(float dt) {
             );
         }
     }
+
     else if (!isMoving)
     {
         idleTimer += dt;
@@ -159,6 +170,7 @@ void Player::movement(float dt) {
     }
     sprite.move(movement * dt);
 }
+
 void Player::following_circle(float dt) {
     atkCircle.setPosition(sprite.getPosition());
     if (atk_state)
@@ -193,6 +205,12 @@ const sf::CircleShape& Player::getAtkCircle() const
 bool Player::isAttacking() const
 {
     return atk_state;
+}
+sf::Time Player::getAtkAcc() {
+    return atkAcc;
+}
+int Player::getAtkSpeed() {
+    return atk_speed;
 }
 int Player::gethp() {
     return hp;

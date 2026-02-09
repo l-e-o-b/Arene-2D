@@ -5,7 +5,6 @@ void AttackState::Enter(NpcContext ctx)
 {
     if (ctx.bot && ctx.bot->canAttack())
     {
-        std::cout << "ATTACK !" << std::endl;
         ctx.bot->startAttackCooldown();
         ctx.bot->setAnimation("Assets/VampAttack.png");
         ctx.bot->startAttackAnim();
@@ -22,4 +21,5 @@ void AttackState::Enter(NpcContext ctx)
 
 void AttackState::Execute(NpcContext ctx)
 {
+
 }

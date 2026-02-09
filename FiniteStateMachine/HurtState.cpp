@@ -1,17 +1,17 @@
-#include "NpcStates/ChaseState.h"
+#include "HurtState.h"
 #include <cmath>
 #include <iostream>
 #include "Bot.h"
 
 namespace NpcAi
 {
-    void ChaseState::Enter(NpcContext _context)
+    void HurtState::Enter(NpcContext _context)
     {
         _context.bot->setAnimation("Assets/VampChase.png");
 
     }
 
-    void ChaseState::Execute(NpcContext _context)
+    void HurtState::Execute(NpcContext _context)
     {
         if (_context.bot == nullptr)
             return;
@@ -26,7 +26,8 @@ namespace NpcAi
         _context.bot->move(direction, 1.f / 60.f);
     }
 
-    void ChaseState::Exit(NpcContext)
+    void HurtState::Exit(NpcContext)
     {
+
     }
 }

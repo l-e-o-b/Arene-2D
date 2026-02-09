@@ -141,6 +141,7 @@
     <ClCompile Include="ChaseState.cpp" />
     <ClCompile Include="Conditions.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="HurtState.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Bot.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="HurtState.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="NpcStates\ChaseState.h" />

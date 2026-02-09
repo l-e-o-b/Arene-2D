@@ -8,12 +8,12 @@ class Game
 public:
     Game();
     void run();
-
+    void player_enemy(Bot& bot);
+    void botupdate(Bot& bot, sf::Rect<float> bounds, float dt);
 private:
     void processEvents();
     void update(float dt);
     void render();
-    void player_enemy(Bot& bot);
     sf::RenderWindow window;
     sf::Clock clock;
 

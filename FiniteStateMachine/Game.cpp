@@ -22,8 +22,6 @@ void Game::run()
         update(dt);
 
         render();
-        player_enemy(zoneBot);
-        player_enemy(aggressiveBot);
     }
 }
 
@@ -37,11 +35,8 @@ void Game::player_enemy(Bot& bot) {
         std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
         bot.setHit();
     }
-    if (!player.isAttacking()) {
-        bot.resetHit();
-
-    }
 }
+
 
 void resolveRectCircleCollision(
     sf::RectangleShape& rect,
@@ -127,6 +122,13 @@ void Game::processEvents()
     }
 }
 
+void Game::botupdate(Bot& bot, sf::Rect<float> bounds, float dt) {
+    if (bot.gethp() > 0) {
+        bot.getContext().playerPosition = player.getPosition();
+        bot.Update(dt);
+        bot.clampToMap(bounds);
+    }
+}
 
 void Game::update(float dt)
 {
@@ -139,21 +141,25 @@ void Game::update(float dt)
         resolveRectCircleCollision(player.getHitbox(),barrel
         );
     }
+    botupdate(aggressiveBot, bounds, dt);
+    botupdate(zoneBot, bounds, dt);
 
-    if (aggressiveBot.gethp() > 0){
-        aggressiveBot.getContext().playerPosition = player.getPosition();
-        aggressiveBot.Update(dt);
-        aggressiveBot.clampToMap(bounds);
-    }
-
-    if (zoneBot.gethp() > 0) {
-        zoneBot.getContext().playerPosition = player.getPosition();
-        zoneBot.Update(dt);
-        zoneBot.clampToMap(bounds);
-    }
     resolveRectCollision(player.getHitbox(), aggressiveBot.getHitbox());
     resolveRectCollision(player.getHitbox(), zoneBot.getHitbox());
     resolveRectCollision(aggressiveBot.getHitbox(), zoneBot.getHitbox());
+
+    static bool lastAtkState = true;
+
+    if (player.isAttacking() && !lastAtkState)
+    {
+        aggressiveBot.resetHit();
+        zoneBot.resetHit();
+    }
+
+    lastAtkState = player.isAttacking();
+
+    player_enemy(zoneBot);
+    player_enemy(aggressiveBot);
 
 }
 

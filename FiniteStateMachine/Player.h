@@ -33,11 +33,14 @@ public:
     void Attack(float dt);
     float getCollisionRadius() const;
     sf::RectangleShape& getHitbox();
+    sf::Time getAtkAcc();
+    int getAtkSpeed();
 
 private:
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;
 
+    int directionRow = 0;
     float speed;
     float atk_speed;
     sf::Time atkAcc;
