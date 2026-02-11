@@ -123,14 +123,19 @@ void Game::processEvents()
     }
 }
 
-void Game::botupdate(Bot& bot, sf::Rect<float> bounds, float dt) {
-    if (bot.gethp() > 0) {
-        bot.getContext().playerPosition = player.getPosition();
-        bot.Update(dt);
-        bot.clampToMap(bounds);
-    }
+void Game::botupdate(Bot& bot, sf::Rect<float> bounds, float dt)
+{
+    if (bot.gethp() <= 0)
+        return;
+
     bot.getContext().player = &player;
+    bot.getContext().playerPosition = player.getPosition();
+
+    bot.Update(dt);
+    bot.clampToMap(bounds);
 }
+
+
 
 void Game::update(float dt)
 {
@@ -165,7 +170,6 @@ void Game::update(float dt)
 
     player_enemy(zoneBot);
     player_enemy(aggressiveBot);
-
 }
 
 void Game::render()
@@ -188,5 +192,9 @@ void Game::render()
         window.draw(debug);
     }
     window.display();
+
 }
+
+
+
 
