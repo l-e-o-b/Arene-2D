@@ -34,7 +34,14 @@ public:
     float getCollisionRadius() const;
     sf::RectangleShape& getHitbox();
     sf::Time getAtkAcc();
-    int getAtkSpeed();
+    float getAtkSpeed();
+
+    void takeDamage(int dmg);
+    bool canBeHit() const;
+    void setHit();
+    void resetHit();
+    bool isAlive() const;
+
 
 private:
     sf::RectangleShape shape;
@@ -80,5 +87,11 @@ private:
 
     float attackFrameTime = 0.12f;
     float attackTimer = 0.f;
+
+    bool damaged = false;
+    sf::Time invincibilityTimer = sf::Time::Zero;
+    sf::Time invincibilityDuration = sf::seconds(0.5f);
+
+    bool alive = true;
 
 };

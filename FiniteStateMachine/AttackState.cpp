@@ -21,5 +21,24 @@ void AttackState::Enter(NpcContext ctx)
 
 void AttackState::Execute(NpcContext ctx)
 {
+    if (!ctx.player->isAlive())
+        return;
 
+    if (!ctx.bot || !ctx.player)
+        return;
+
+    if (!ctx.bot->canAttack())
+        return;
+
+    // Distance simple (hitbox rect-rect)
+    if (ctx.bot->getHitbox().getGlobalBounds()
+        .findIntersection(ctx.player->getHitbox().getGlobalBounds()))
+    {
+        if (ctx.player->canBeHit())
+        {
+            ctx.player->takeDamage(ctx.bot->getdmg());
+            ctx.bot->startAttackCooldown();
+        }
+    }
 }
+
