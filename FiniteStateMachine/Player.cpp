@@ -43,8 +43,17 @@ sf::RectangleShape& Player::getHitbox()
     return shape;
 }
 
+bool Player::isAlive() const
+{
+    return alive;
+}
+
+
 void Player::update(float dt)
 {
+    if (!alive)
+        return;
+
     if (damaged)
     {
         invincibilityTimer += sf::seconds(dt);
@@ -64,6 +73,9 @@ void Player::update(float dt)
 }
 
 void Player::movement(float dt) {
+    if (!alive)
+        return;
+
     sf::Vector2f movement{ 0.f, 0.f };
 
     bool isMoving = false;
@@ -194,6 +206,9 @@ void Player::following_circle(float dt) {
 }
 
 void Player::Attack(float dt) {
+    if (!alive)
+        return;
+
     atkAcc += sf::seconds(dt);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
     {
@@ -250,6 +265,9 @@ void Player::clampToMap(const sf::FloatRect& bounds)
 
 void Player::render(sf::RenderWindow& window)
 {
+    if (!alive)
+        return;
+
     window.draw(atkCircle);
     window.draw(sprite);
 }
@@ -261,14 +279,23 @@ float Player::getCollisionRadius() const
 
 void Player::takeDamage(int dmg)
 {
-    if (damaged) return;
+    if (!alive || damaged)
+        return;
 
     hp -= dmg;
     damaged = true;
     invincibilityTimer = sf::Time::Zero;
 
     std::cout << "Player takes " << dmg << " dmg, hp = " << hp << std::endl;
+
+    if (hp <= 0)
+    {
+        hp = 0;
+        alive = false;
+        std::cout << "Player is DEAD\n";
+    }
 }
+
 
 bool Player::canBeHit() const
 {

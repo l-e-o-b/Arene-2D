@@ -134,8 +134,11 @@ void Game::botupdate(Bot& bot, sf::Rect<float> bounds, float dt) {
 void Game::update(float dt)
 {
     auto bounds = map.getInnerBounds();
-    player.update(dt);
-    player.clampToMap(bounds);
+    if (player.isAlive())
+    {
+        player.update(dt);
+        player.clampToMap(bounds);
+    }
 
     for (const auto& barrel : map.getObstacleColliders())
     {

@@ -40,6 +40,7 @@ public:
     bool canBeHit() const;
     void setHit();
     void resetHit();
+    bool isAlive() const;
 
 private:
     sf::RectangleShape shape;
@@ -89,5 +90,7 @@ private:
     bool damaged = false;
     sf::Time invincibilityTimer = sf::Time::Zero;
     sf::Time invincibilityDuration = sf::seconds(0.5f);
+
+    bool alive = true;
 
 };

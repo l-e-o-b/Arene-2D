@@ -21,6 +21,9 @@ void AttackState::Enter(NpcContext ctx)
 
 void AttackState::Execute(NpcContext ctx)
 {
+    if (!ctx.player->isAlive())
+        return;
+
     if (!ctx.bot || !ctx.player)
         return;
 
