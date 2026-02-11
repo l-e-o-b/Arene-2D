@@ -64,8 +64,8 @@ void Player::update(float dt)
         }
     }
 
-    shape.setPosition(sprite.getPosition());
     movement(dt);
+    sprite.setPosition(shape.getPosition());
     following_circle(dt);
     if (!atk_state) {
         Attack(dt);
@@ -190,7 +190,7 @@ void Player::movement(float dt) {
         idleTimer = 0.f;
         currentIdleFrame = 0;
     }
-    sprite.move(movement * dt);
+    shape.move(movement * dt);
 }
 
 void Player::following_circle(float dt) {
@@ -251,17 +251,18 @@ void Player::clampToMap(const sf::FloatRect& bounds)
     sf::Vector2f pos = shape.getPosition();
     sf::Vector2f half = shape.getSize() / 2.f;
 
-    pos.x = std::clamp(pos.x, (bounds.position.x + half.x), bounds.position.x + (bounds.size.x - half.x));
-    pos.y = std::clamp(pos.y, (bounds.position.y + half.y), bounds.position.y + (bounds.size.y - half.y));
+    pos.x = std::clamp(pos.x,
+        bounds.position.x + half.x,
+        bounds.position.x + bounds.size.x - half.x);
+
+    pos.y = std::clamp(pos.y,
+        bounds.position.y + half.y,
+        bounds.position.y + bounds.size.y - half.y);
 
     shape.setPosition(pos);
-    sf::Vector2f pos1 = sprite.getPosition();
-
-    pos1.x = std::clamp(pos1.x, (bounds.position.x + 24.f), bounds.position.x + (bounds.size.x - 24.f));
-    pos1.y = std::clamp(pos1.y, (bounds.position.y + 24.f), bounds.position.y + (bounds.size.y - 24.f));
-
-    sprite.setPosition(pos1);
+    sprite.setPosition(pos);
 }
+
 
 void Player::render(sf::RenderWindow& window)
 {
@@ -311,3 +312,5 @@ void Player::resetHit()
 {
     damaged = false;
 }
+
+

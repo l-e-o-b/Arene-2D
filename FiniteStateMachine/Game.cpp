@@ -46,7 +46,8 @@ void resolveRectCircleCollision(
     sf::Vector2f half = rect.getSize() / 2.f;
 
     sf::Vector2f circlePos = circle.getPosition();
-    float radius = circle.getRadius();
+    float radius = circle.getRadius() + 2.f; // padding
+
 
     float closestX = std::clamp(
         circlePos.x,

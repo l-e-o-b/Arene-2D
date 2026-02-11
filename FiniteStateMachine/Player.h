@@ -42,6 +42,7 @@ public:
     void resetHit();
     bool isAlive() const;
 
+
 private:
     sf::RectangleShape shape;
     sf::CircleShape atkCircle;
