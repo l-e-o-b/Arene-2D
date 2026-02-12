@@ -95,5 +95,10 @@ private:
     bool hitThisFrame = false;
 
     bool hurtFinished = false;
+    sf::RectangleShape hpBarBackground;
+    sf::RectangleShape hpBarFill;
+
+    int maxHp = 20;
+
 
 };
