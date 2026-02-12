@@ -17,6 +17,19 @@ Player::Player():sprite(texture)
     shape.setOrigin(shape.getSize() / 2.f);
     shape.setPosition({ 400.f, 300.f });
 
+    hp = 20;
+    maxHp = hp;
+
+
+    hpBarBackground.setSize({ 50.f, 6.f });
+
+    hpBarBackground.setOrigin(hpBarBackground.getSize() / 2.f);
+
+    hpBarFill.setSize({ 50.f, 6.f });
+    hpBarFill.setFillColor(sf::Color::Green);
+    hpBarFill.setOrigin(hpBarFill.getSize() / 2.f);
+
+
 
     speed = 200.f;
     atk_speed = 1.6f;
@@ -65,6 +78,25 @@ void Player::update(float dt)
     if (!atk_state) {
         Attack(dt);
     }
+
+    // Position au-dessus du joueur
+    sf::Vector2f pos = sprite.getPosition();
+    hpBarBackground.setPosition({ pos.x, pos.y - 40.f });
+    hpBarFill.setPosition({ pos.x, pos.y - 40.f });
+
+    // Ajuster la largeur selon HP
+    float hpRatio = static_cast<float>(hp) / maxHp;
+
+    hpBarFill.setSize({ 50.f * hpRatio, 6.f });
+    hpBarFill.setOrigin({ (50.f * hpRatio) / 2.f, 3.f });
+    if (hpRatio > 0.5f)
+        hpBarFill.setFillColor(sf::Color::Green);
+    else if (hpRatio > 0.25f)
+        hpBarFill.setFillColor(sf::Color::Yellow);
+    else
+        hpBarFill.setFillColor(sf::Color::Red);
+
+
 }
 
 void Player::movement(float dt) {
@@ -265,6 +297,9 @@ void Player::render(sf::RenderWindow& window)
 {
     if (!alive)
         return;
+    window.draw(hpBarBackground);
+    window.draw(hpBarFill);
+
     window.draw(sprite);
 }
 

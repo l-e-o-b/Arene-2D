@@ -92,5 +92,10 @@ private:
     sf::Time invincibilityDuration = sf::seconds(0.5f);
 
     bool alive = true;
+    sf::RectangleShape hpBarBackground;
+    sf::RectangleShape hpBarFill;
+
+    int maxHp = 20;   // valeur max fixe
+
 
 };

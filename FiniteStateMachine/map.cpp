@@ -18,10 +18,10 @@ Map::Map(): obstacleSprite(obstacleTexture), obstacleSprite2(obstacleTexture2) ,
     left.setPosition({ 50.f, 50.f });
     right.setPosition({ width + 30.f, 50.f });
 
-    top.setFillColor(sf::Color::White);
-    bottom.setFillColor(sf::Color::White);
-    left.setFillColor(sf::Color::White);
-    right.setFillColor(sf::Color::White);
+    top.setFillColor(sf::Color::Transparent);
+    bottom.setFillColor(sf::Color::Transparent);
+    left.setFillColor(sf::Color::Transparent);
+    right.setFillColor(sf::Color::Transparent);
 
     // Barrel 1
     b1.setSize({32.f, 32.f});

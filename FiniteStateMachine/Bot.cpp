@@ -31,6 +31,17 @@ Bot::Bot(const sf::Vector2f& startPos, BotType type)
     damaged = false;
     attacking = false;
 
+    maxHp = hp;
+
+    hpBarBackground.setSize({ 40.f, 5.f });
+    hpBarBackground.setFillColor(sf::Color(50, 50, 50));
+    hpBarBackground.setOrigin(hpBarBackground.getSize() / 2.f);
+
+    hpBarFill.setSize({ 40.f, 5.f });
+    hpBarFill.setFillColor(sf::Color::Green);
+    hpBarFill.setOrigin(hpBarFill.getSize() / 2.f);
+
+
     framerowcount = texture.getSize().x / frameSize.x;
     currentFrame = 0;
     currentRow = 0;
@@ -323,10 +334,34 @@ void Bot::Update(float dt)
         { currentFrame * frameSize.x, currentRow * frameSize.y },
         frameSize
         });
+
+    hpBarBackground.setPosition({ pos.x, pos.y - 35.f });
+    hpBarFill.setPosition({ pos.x, pos.y - 35.f });
+
+    // Ajuster largeur
+    float hpRatio = static_cast<float>(hp) / maxHp;
+
+    hpBarFill.setSize({ 40.f * hpRatio, 5.f });
+    hpBarFill.setOrigin({ (40.f * hpRatio) / 2.f, 2.5f });
+
+    // Couleur dynamique
+    if (hpRatio > 0.5f)
+        hpBarFill.setFillColor(sf::Color::Green);
+    else if (hpRatio > 0.25f)
+        hpBarFill.setFillColor(sf::Color::Yellow);
+    else
+        hpBarFill.setFillColor(sf::Color::Red);
+
 }
 
 void Bot::Render(sf::RenderWindow& window)
 {
+    if (hp > 0)
+    {
+        window.draw(hpBarBackground);
+        window.draw(hpBarFill);
+    }
+
     if (hp > 0)
         window.draw(sprite);
 }
