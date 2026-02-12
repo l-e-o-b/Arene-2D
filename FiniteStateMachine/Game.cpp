@@ -1,31 +1,34 @@
 #include <iostream>
 #include "Game.h"
 Game::Game()
-    : window(sf::VideoMode{ sf::Vector2u{800, 600} }, "Mini Arene 2D")
+    : window(sf::VideoMode({ 800, 600 }), "Mini Arene 2D")
     , aggressiveBot({ 200.f, 300.f }, BotType::Aggressive)
     , zoneBot({ 600.f, 300.f }, BotType::ZoneGuard)
+    , backgroundTexture()
     , backgroundSprite(backgroundTexture)
 {
     if (!backgroundTexture.loadFromFile("Assets/background.png"))
     {
         std::cout << "Erreur chargement background\n";
     }
+
     backgroundSprite.setTexture(backgroundTexture);
-    backgroundSprite.setOrigin({ 0.f, 0.f });
-    backgroundSprite.setPosition({0.f, 0.f});
+    backgroundSprite.setPosition({ 0.f, 0.f });
+
     sf::Vector2u textureSize = backgroundTexture.getSize();
     sf::Vector2u windowSize = window.getSize();
 
     float scaleX = static_cast<float>(windowSize.x) / textureSize.x;
     float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
 
-    backgroundSprite.setScale({ scaleX, scaleY });
+    backgroundSprite.setScale(sf::Vector2f(scaleX, scaleY));
 
     window.setFramerateLimit(60);
 
     aggressiveBot.Init();
     zoneBot.Init();
 }
+
 
 
 bool Game::run()
