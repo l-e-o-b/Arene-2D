@@ -170,6 +170,19 @@ void Game::update(float dt)
 
     player_enemy(zoneBot);
     player_enemy(aggressiveBot);
+
+    if (!player.isAlive())
+    {
+        window.close();
+        showGameOverWindow();
+    }
+
+    if (aggressiveBot.gethp() <= 0 &&
+        zoneBot.gethp() <= 0)
+    {
+        window.close();           // ferme le jeu principal
+        showVictoryWindow();      
+    }
 }
 
 void Game::render()
@@ -194,6 +207,82 @@ void Game::render()
     window.display();
 
 }
+
+void Game::showVictoryWindow()
+{
+    sf::RenderWindow victoryWindow(
+        sf::VideoMode({ 600, 400 }),
+        "Victoire"
+    );
+
+    sf::Font font;
+    if (!font.openFromFile("Assets/arial.ttf"))
+    {
+        std::cout << "Erreur chargement font\n";
+        return;
+    }
+
+    sf::Text text(font);
+    text.setString("VICTOIRE !");
+    text.setCharacterSize(60);
+    text.setFillColor(sf::Color::Green);
+    text.setStyle(sf::Text::Bold);
+    text.setPosition({ 150.f, 150.f });
+
+    while (victoryWindow.isOpen())
+    {
+        while (const auto event = victoryWindow.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+                victoryWindow.close();
+        }
+
+        victoryWindow.clear(sf::Color::Black);
+        victoryWindow.draw(text);
+        victoryWindow.display();
+    }
+}
+
+void Game::showGameOverWindow()
+{
+    sf::RenderWindow gameOverWindow(
+        sf::VideoMode({ 600, 400 }),
+        "Game Over"
+    );
+
+    sf::Font font;
+    if (!font.openFromFile("Assets/arial.ttf"))
+    {
+        std::cout << "Erreur chargement font\n";
+        return;
+    }
+
+    sf::Text text(font);
+    text.setString("GAME OVER");
+    text.setCharacterSize(60);
+    text.setFillColor(sf::Color::Red);
+    text.setStyle(sf::Text::Bold);
+
+    sf::FloatRect bounds = text.getLocalBounds();
+    text.setOrigin({ bounds.size.x / 2.f, bounds.size.y / 2.f });
+    text.setPosition({ 300.f, 200.f });
+
+    while (gameOverWindow.isOpen())
+    {
+        while (const auto event = gameOverWindow.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+                gameOverWindow.close();
+        }
+
+        gameOverWindow.clear(sf::Color::Black);
+        gameOverWindow.draw(text);
+        gameOverWindow.display();
+    }
+}
+
+
+
 
 
 

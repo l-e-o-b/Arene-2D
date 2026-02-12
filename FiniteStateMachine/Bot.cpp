@@ -12,12 +12,17 @@ Bot::Bot(const sf::Vector2f& startPos, BotType type)
         sf::IntRect({ 0, 0 }, frameSize)
     );
 
+    attackHitbox.setSize({ 40.f, 30.f });
+    attackHitbox.setFillColor(sf::Color(255, 0, 0, 120)); // debug visuel
+    attackHitbox.setOrigin(attackHitbox.getSize() / 2.f);
+
+
     sprite.setOrigin(
         { frameSize.x / 2.f, frameSize.y / 2.f }
     );
     sprite.setScale({ 1.5f, 1.5f });
     sprite.setPosition(startPos);
-    shape.setSize({ 32.f, 32.f });
+    shape.setSize({25.f, 25.f });
     shape.setFillColor(sf::Color::Yellow);
     shape.setOrigin(shape.getSize() / 2.f);
     shape.setPosition(startPos);
@@ -193,6 +198,12 @@ void Bot::setAnimation(const std::string& file)
     frameDuration = sf::seconds(1.f / framerowcount);
     animTimer = sf::Time::Zero;
 }
+
+sf::RectangleShape& Bot::getAttackHitbox()
+{
+    return attackHitbox;
+}
+
 void Bot::Update(float dt)
 {
     // Mise à jour du timer d’attaque
@@ -203,6 +214,27 @@ void Bot::Update(float dt)
     context.BotPosition = shape.getPosition();
     fsm.Update(context);
     animTimer += sf::seconds(dt);
+
+    sf::Vector2f pos = shape.getPosition();
+    float offset = 35.f;
+
+    switch (currentRow)
+    {
+    case 0: // down
+        attackHitbox.setPosition({ pos.x, pos.y + offset });
+        break;
+    case 1: // up
+        attackHitbox.setPosition({ pos.x, pos.y - offset });
+        break;
+    case 2: // left
+        attackHitbox.setPosition({ pos.x - offset, pos.y });
+        break;
+    case 3: // right
+        attackHitbox.setPosition({ pos.x + offset, pos.y });
+        break;
+    }
+
+
 
     if (animTimer >= frameDuration)
     {
@@ -231,4 +263,7 @@ void Bot::Update(float dt)
 void Bot::Render(sf::RenderWindow& window)
 {
     window.draw(sprite);
+    if (attacking)
+        window.draw(attackHitbox);
+
 }

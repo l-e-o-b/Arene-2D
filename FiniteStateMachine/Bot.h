@@ -47,6 +47,7 @@ public:
     void startAttackAnim();
     void Attacked();
     sf::RectangleShape& getHitbox();
+    sf::RectangleShape& getAttackHitbox();
 
 private:
     // --- Partie JEU ---
@@ -75,4 +76,8 @@ private:
 
     float attackCooldown = 1.0f;
     float attackTimer = 0.0f;
+
+    sf::RectangleShape attackHitbox;
+
+
 };

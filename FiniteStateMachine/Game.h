@@ -11,6 +11,8 @@ public:
     void run();
     void player_enemy(Bot& bot);
     void botupdate(Bot& bot, sf::Rect<float> bounds, float dt);
+    void showVictoryWindow();
+    void showGameOverWindow();
 private:
     void processEvents();
     void update(float dt);
