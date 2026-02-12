@@ -24,6 +24,12 @@ namespace NpcAi
 
         _context.bot->setDirection(direction);
         _context.bot->move(direction, 1.f / 60.f);
+
+        if (_context.player->isAttacking() &&
+            _context.bot->isInsideCone(*_context.player))
+        {
+            _context.bot->markHit(_context.player->getdmg());
+        }
     }
 
     void ChaseState::Exit(NpcContext)

@@ -17,13 +17,9 @@ Player::Player():sprite(texture)
     shape.setOrigin(shape.getSize() / 2.f);
     shape.setPosition({ 400.f, 300.f });
 
-    atkCircle.setRadius(60.f);
-    atkCircle.setOrigin({ 60.f, 60.f });
-    atkCircle.setFillColor(sf::Color::Red);
 
-
-    speed = 250.f;
-    atk_speed = 4;
+    speed = 200.f;
+    atk_speed = 1.6f;
     atk_state = false;
     atkDuration = sf::Time::Zero;
     atkAcc = sf::Time::Zero;
@@ -66,7 +62,6 @@ void Player::update(float dt)
 
     movement(dt);
     sprite.setPosition(shape.getPosition());
-    following_circle(dt);
     if (!atk_state) {
         Attack(dt);
     }
@@ -192,18 +187,24 @@ void Player::movement(float dt) {
     }
     shape.move(movement * dt);
 }
-
-void Player::following_circle(float dt) {
-    atkCircle.setPosition(sprite.getPosition());
-    if (atk_state)
+sf::Vector2f Player::getForwardVector() const
+{
+    switch (currentDirection)
     {
-        atkDuration += sf::seconds(dt);
-        if (atkDuration >= sf::seconds(0.1f))
-        {
-            atkDuration = sf::Time::Zero;
-        }
+    case Direction::Up:    return { 0.f, -1.f };
+    case Direction::Down:  return { 0.f, 1.f };
+    case Direction::Left:  return { -1.f, 0.f };
+    case Direction::Right: return { 1.f, 0.f };
     }
+    return { 0.f, 1.f };
 }
+float Player::getAttackRange() const {
+    return attackRange;
+}
+float Player::getAttackAngle() const {
+    return attackAngle;
+}
+
 
 void Player::Attack(float dt) {
     if (!alive)
@@ -221,10 +222,6 @@ void Player::Attack(float dt) {
             atkAcc -= interval;
         }
     }
-}
-const sf::CircleShape& Player::getAtkCircle() const
-{
-    return atkCircle;
 }
 
 bool Player::isAttacking() const
@@ -268,8 +265,6 @@ void Player::render(sf::RenderWindow& window)
 {
     if (!alive)
         return;
-
-    window.draw(atkCircle);
     window.draw(sprite);
 }
 

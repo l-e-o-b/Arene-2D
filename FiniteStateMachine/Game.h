@@ -9,7 +9,6 @@ class Game
 public:
     Game();
     void run();
-    void player_enemy(Bot& bot);
     void botupdate(Bot& bot, sf::Rect<float> bounds, float dt);
 private:
     void processEvents();
