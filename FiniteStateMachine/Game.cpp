@@ -5,7 +5,7 @@ Game::Game()
     , aggressiveBot({ 200.f, 300.f }, BotType::Aggressive)
     , zoneBot({ 600.f, 300.f }, BotType::ZoneGuard)
     , backgroundTexture()
-    , backgroundSprite(backgroundTexture)
+    , backgroundSprite(backgroundTexture)   
 {
     if (!backgroundTexture.loadFromFile("Assets/background.png"))
     {
@@ -13,21 +13,36 @@ Game::Game()
     }
 
     backgroundSprite.setTexture(backgroundTexture);
+
+    backgroundSprite.setTextureRect(
+        sf::IntRect(
+            { 0, 0 },
+        {
+            static_cast<int>(backgroundTexture.getSize().x),
+            static_cast<int>(backgroundTexture.getSize().y)
+        }
+        )
+    );
+
+
+
     backgroundSprite.setPosition({ 0.f, 0.f });
 
+    // Adaptation � la fen�tre
     sf::Vector2u textureSize = backgroundTexture.getSize();
     sf::Vector2u windowSize = window.getSize();
 
     float scaleX = static_cast<float>(windowSize.x) / textureSize.x;
     float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
 
-    backgroundSprite.setScale(sf::Vector2f(scaleX, scaleY));
+    backgroundSprite.setScale({ scaleX, scaleY });
 
     window.setFramerateLimit(60);
 
     aggressiveBot.Init();
     zoneBot.Init();
 }
+
 
 
 
@@ -220,14 +235,17 @@ void Game::update(float dt)
 void Game::render()
 {
     window.clear();
-    backgroundSprite.setColor(sf::Color::Green);
-
 
     window.draw(backgroundSprite); 
-    player.render(window);
-    aggressiveBot.Render(window);
-    zoneBot.Render(window);
+
     map.render(window);
+    player.render(window);
+
+    if (aggressiveBot.gethp() > 0)
+        aggressiveBot.Render(window);
+
+    if (zoneBot.gethp() > 0)
+        zoneBot.Render(window);
 
     window.display();
 }
