@@ -1,0 +1,144 @@
+# MiniArène2D – Intelligence Artificielle & Finite State Machine
+
+---
+
+#  Concept du jeu
+
+Le joueur contrôle un personnage dans une arène fermée.  
+Plusieurs ennemis contrôlés par une IA patrouillent dans la zone.
+
+Lorsque les ennemis détectent le joueur, ils changent d’état (poursuite, attaque, etc.).
+
+La partie se termine lorsque tous les ennemis sont éliminés, ou que le joueur est éliminé.
+
+---
+
+#  Règles du jeu
+
+- Le joueur peut se déplacer librement dans l’arène.
+- Les obstacles bloquent les déplacements.
+- Les ennemis utilisent une FSM pour gérer leur comportement.
+- Les états des ennemis sont visibles via un affichage debug.
+- Si le joueur élimine tous les ennemis → victoire.
+
+---
+
+#  Architecture de l’Intelligence Artificielle
+
+## Structure générale
+
+- Aucun code spécifique à SFML dans la FSM
+- Les états sont des classes distinctes
+- Les transitions sont basées sur des conditions observables
+
+## États implémentés
+
+- **IdleState** → Inactif
+- **PatrolState** → Déplacement
+- **ChaseState** → Poursuite du joueur
+- **AttackState** → Attaque
+- **DeadState** → Mort
+
+## Transitions principales
+
+- Idle → Patrol (temporisation)
+- Patrol → Chase (si joueur détecté)
+- Chase → Attack (si distance faible)
+- Attack → Chase (si joueur s’éloigne)
+- Tout état → Dead (si points de vie ≤ 0)
+
+---
+
+#  Schéma simplifié de la FSM
+
+    +-------+
+    | Idle  |
+    +-------+
+        |
+        v
+    +--------+
+    | Patrol |
+    +--------+
+        |
+joueur détecté
+        v
+    +--------+
+    | Chase  |
+    +--------+
+        |
+distance courte
+	  v
+    +---------+
+    | Attack  |
+    +---------+
+        |
+    HP <= 0
+        v
+    +------+
+    | Dead |
+    +------+
+---
+
+Aucun moteur de jeu externe n’a été utilisé.
+
+---
+
+
+
+#  Contrôles
+
+| Touche | Action |
+|--------|--------|
+| Z / W  | Avancer |
+| S      | Reculer |
+| Q / A  | Gauche |
+| D      | Droite |
+
+---
+
+# Structure du projet
+
+/Game
+/FSM
+/NpcStates
+/assets
+
+---
+
+#  Fonctionnalités réalisées
+
+- Joueur contrôlable
+- Obstacles statiques
+- Collisions joueur / obstacles
+- Collisions joueur / Enemy
+- Collisions Enemy / obstacles
+- 2 PNJ utilisant la même FSM
+- États séparés en classes
+- Transitions basées sur conditions
+- Ecran de fin
+- Ecran de début
+
+---
+
+#  Fonctionnalités non réalisées
+
+- Animations complexes
+- Système audio
+
+---
+
+#  Auteurs
+
+Projet réalisé en binôme :
+
+- Bouyat Léo 
+- Wang Maxime 
+
+---
+
+#  Assets utilisés
+
+- Assets graphiques libres de droits
+- Police utilisée (si applicable)
+
+---
