@@ -94,16 +94,29 @@ void VictoryScreen::render()
     sf::Vector2f mousePos =
         window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-    // Hover
-    menuButton.setFillColor(
-        menuButton.getGlobalBounds().contains(mousePos)
-        ? sf::Color::Yellow
-        : sf::Color::White);
+    // --- MENU ---
+    if (menuButton.getGlobalBounds().contains(mousePos))
+    {
+        menuButton.setFillColor(sf::Color::Yellow);
+        menuButton.setScale({ 1.1f, 1.1f });
+    }
+    else
+    {
+        menuButton.setFillColor(sf::Color::White);
+        menuButton.setScale({ 1.f, 1.f });
+    }
 
-    quitButton.setFillColor(
-        quitButton.getGlobalBounds().contains(mousePos)
-        ? sf::Color::Yellow
-        : sf::Color::White);
+    // --- QUIT ---
+    if (quitButton.getGlobalBounds().contains(mousePos))
+    {
+        quitButton.setFillColor(sf::Color::Yellow);
+        quitButton.setScale({ 1.1f, 1.1f });
+    }
+    else
+    {
+        quitButton.setFillColor(sf::Color::White);
+        quitButton.setScale({ 1.f, 1.f });
+    }
 
     window.draw(title);
     window.draw(menuButton);
