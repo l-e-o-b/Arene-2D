@@ -3,16 +3,16 @@
 #include "Player.h"
 #include "Bot.h"
 #include "map.h"
+#include "GameOverScreen.h"
+#include "VictoryScreen.h"
 class Game
 {
 
 public:
     Game();
-    void run();
+    bool run();
     void player_enemy(Bot& bot);
     void botupdate(Bot& bot, sf::Rect<float> bounds, float dt);
-    void showVictoryWindow();
-    void showGameOverWindow();
 private:
     void processEvents();
     void update(float dt);
@@ -25,4 +25,7 @@ private:
     Bot aggressiveBot;
     Bot zoneBot;
     Map map;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
+
 };

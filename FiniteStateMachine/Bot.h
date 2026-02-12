@@ -55,6 +55,7 @@ public:
     bool wasJustHit();
     bool isHurtFinished() const;
     void setHurt(bool hurt);
+
 private:
     // --- Partie JEU ---
     sf::RectangleShape shape;
@@ -83,11 +84,8 @@ private:
     float attackCooldown = 1.0f;
     float attackTimer = 0.0f;
 
+    sf::RectangleShape attackHitbox;
     bool hitThisFrame = false;
     bool hurtFinished = false;
-
-
-    sf::RectangleShape attackHitbox;
-
 
 };
