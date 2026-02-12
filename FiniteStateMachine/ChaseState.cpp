@@ -5,30 +5,30 @@
 
 namespace NpcAi
 {
-    void ChaseState::Enter(NpcContext _context)
+    void ChaseState::Enter(NpcContext ctx)
     {
-        _context.bot->setAnimation("Assets/VampChase.png");
+        ctx.bot->setAnimation("Assets/VampChase.png");
 
     }
 
-    void ChaseState::Execute(NpcContext _context)
+    void ChaseState::Execute(NpcContext ctx)
     {
-        if (_context.bot == nullptr)
+        if (ctx.bot == nullptr)
             return;
 
-        sf::Vector2f direction = _context.playerPosition - _context.BotPosition;
+        sf::Vector2f direction = ctx.playerPosition - ctx.BotPosition;
 
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
         if (length > 0.f)
             direction /= length;
 
-        _context.bot->setDirection(direction);
-        _context.bot->move(direction, 1.f / 60.f);
+        ctx.bot->setDirection(direction);
+        ctx.bot->setVelocity(direction);
 
-        if (_context.player->isAttacking() &&
-            _context.bot->isInsideCone(*_context.player))
+        if (ctx.player->isAttacking() &&
+            ctx.bot->isInsideCone(*ctx.player))
         {
-            _context.bot->markHit(_context.player->getdmg());
+            ctx.bot->markHit(ctx.player->getdmg());
         }
     }
 

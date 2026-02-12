@@ -52,13 +52,24 @@ bool Bot::canAttack() const
 }
 
 
-void Bot::move(const sf::Vector2f& direction, float dt)
+void Bot::move(const sf::Vector2f& direction)
 {
-    shape.move(direction * speed * dt);
+    shape.move(direction);
 }
 sf::RectangleShape& Bot::getHitbox()
 {
     return shape;
+}
+
+void Bot::setVelocity(const sf::Vector2f& direction)
+{
+    velocity = direction * speed;
+}
+
+
+sf::Vector2f Bot::getVelocity() const
+{
+    return velocity;
 }
 
 

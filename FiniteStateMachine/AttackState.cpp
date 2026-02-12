@@ -14,6 +14,8 @@ void AttackState::Enter(NpcContext ctx)
 
         sf::Vector2f direction = ctx.playerPosition - ctx.BotPosition;
         ctx.bot->setDirection(direction);
+        ctx.bot->setVelocity({ 0.f, 0.f });
+
     }
 }
 

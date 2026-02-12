@@ -63,41 +63,35 @@ bool Game::run()
     return false;
 }
 
-void resolveRectCircleCollision(
-    sf::RectangleShape& rect,
-    const sf::CircleShape& circle)
+void resolveBarrelCollision(
+    sf::RectangleShape& dynamic,
+    const sf::RectangleShape& solid
+)
 {
-    sf::Vector2f rectPos = rect.getPosition();
-    sf::Vector2f half = rect.getSize() / 2.f;
+    sf::FloatRect ra = dynamic.getGlobalBounds();
+    sf::FloatRect rb = solid.getGlobalBounds();
 
-    sf::Vector2f circlePos = circle.getPosition();
-    float radius = circle.getRadius() + 2.f; // padding
+    std::optional<sf::FloatRect> intersection = ra.findIntersection(rb);
 
-
-    float closestX = std::clamp(
-        circlePos.x,
-        rectPos.x - half.x,
-        rectPos.x + half.x
-    );
-
-    float closestY = std::clamp(
-        circlePos.y,
-        rectPos.y - half.y,
-        rectPos.y + half.y
-    );
-
-    sf::Vector2f closestPoint{ closestX, closestY };
-    sf::Vector2f diff = rectPos - closestPoint;
-
-    float dist = std::sqrt(diff.x * diff.x + diff.y * diff.y);
-
-    if (dist == 0.f || dist >= radius)
+    if (!intersection)
         return;
 
-    sf::Vector2f normal = diff / dist;
-    float penetration = radius - dist;
+    sf::FloatRect inter = *intersection;
 
-    rect.move(normal * penetration);
+    if (inter.size.x < inter.size.y)
+    {
+        if (dynamic.getPosition().x < solid.getPosition().x)
+            dynamic.move({ -inter.size.x, 0.f });
+        else
+            dynamic.move({ inter.size.x, 0.f });
+    }
+    else
+    {
+        if (dynamic.getPosition().y < solid.getPosition().y)
+            dynamic.move({ 0.f, -inter.size.y });
+        else
+            dynamic.move({ 0.f, inter.size.y });
+    }
 }
 
 void resolveRectCollision(
@@ -170,11 +164,33 @@ void Game::update(float dt)
         player.update(dt);
         player.clampToMap(bounds);
     }
+    sf::Vector2f zvelocity = zoneBot.getVelocity();
 
-    for (const auto& barrel : map.getObstacleColliders())
+    zoneBot.move({ zvelocity.x * dt, 0.f });
+
+    for ( auto& barrel : map.getObstacleColliders())
+        resolveBarrelCollision(zoneBot.getHitbox(), barrel);
+
+    zoneBot.move({ 0.f, zvelocity.y * dt });
+
+    for ( auto& barrel : map.getObstacleColliders())
+        resolveBarrelCollision(zoneBot.getHitbox(), barrel);
+
+    sf::Vector2f avelocity = aggressiveBot.getVelocity();
+
+    aggressiveBot.move({ avelocity.x * dt, 0.f });
+
+    for ( auto& barrel : map.getObstacleColliders())
+        resolveBarrelCollision(aggressiveBot.getHitbox(), barrel);
+
+    aggressiveBot.move({ 0.f, avelocity.y * dt });
+
+    for ( auto& barrel : map.getObstacleColliders())
+        resolveBarrelCollision(aggressiveBot.getHitbox(), barrel);
+
+    for ( auto& barrel : map.getObstacleColliders())
     {
-        resolveRectCircleCollision(player.getHitbox(), barrel
-        );
+        resolveBarrelCollision(player.getHitbox(), barrel);
     }
     botupdate(aggressiveBot, bounds, dt);
     botupdate(zoneBot, bounds, dt);

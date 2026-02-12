@@ -24,22 +24,22 @@ Map::Map(): obstacleSprite(obstacleTexture), obstacleSprite2(obstacleTexture2) ,
     right.setFillColor(sf::Color::White);
 
     // Barrel 1
-    sf::CircleShape b1(radius);
-    b1.setOrigin({ radius, radius });
+    b1.setSize({32.f, 32.f});
+    b1.setOrigin({ 16.f, 16.f });
     b1.setPosition({ 420.f, 320.f });
     b1.setFillColor(sf::Color::White);
     obstacleColliders.push_back(b1);
 
     // Barrel 2
-    sf::CircleShape b2(radius);
-    b2.setOrigin({ radius, radius });
+    b2.setSize({ 32.f, 32.f });
+    b2.setOrigin({ 16.f, 16.f });
     b2.setPosition({ 320.f, 170.f });
     b2.setFillColor(sf::Color::White);
     obstacleColliders.push_back(b2);
 
     // Barrel 3
-    sf::CircleShape b3(radius);
-    b3.setOrigin({ radius, radius });
+    b3.setSize({ 32.f, 32.f });
+    b3.setOrigin({ 16.f, 16.f });
     b3.setPosition({ 120.f, 220.f });
     b3.setFillColor(sf::Color::White);
     obstacleColliders.push_back(b3);
@@ -124,7 +124,7 @@ sf::FloatRect Map::getInnerBounds() const
 }
 
 
-const std::vector<sf::CircleShape>& Map::getObstacleColliders() const
+std::vector<sf::RectangleShape>& Map::getObstacleColliders()
 {
     return obstacleColliders;
 }

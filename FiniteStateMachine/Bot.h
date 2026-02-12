@@ -31,7 +31,11 @@ public:
     const sf::Vector2f& getPosition() const;
     NpcContext& getContext();
     BotType getType() const;
-    void move(const sf::Vector2f& direction, float dt);
+    void move(const sf::Vector2f& direction);
+    void setVelocity(const sf::Vector2f& direction);
+    sf::Vector2f getVelocity() const;
+
+
     bool canAttack() const;
     void startAttackCooldown();
 
@@ -50,7 +54,6 @@ public:
     sf::RectangleShape& getHitbox();
     sf::RectangleShape& getAttackHitbox();
 
-    void markHit();
     void markHit(int damage);
     int getPendingDamage() const;
     void clearPendingDamage();
@@ -67,7 +70,7 @@ private:
     bool attacking;
     bool attackAnimFinished = false;
     int attackFrameCount = 12;    bool immune = false;
-
+    sf::Vector2f velocity;
     BotType type;
 
     // --- Partie Animation ---
