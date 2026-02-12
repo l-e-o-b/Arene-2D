@@ -60,6 +60,8 @@ bool Game::run()
         }
     }
 
+    return false;
+}
 
 void resolveRectCircleCollision(
     sf::RectangleShape& rect,
@@ -171,7 +173,7 @@ void Game::update(float dt)
 
     for (const auto& barrel : map.getObstacleColliders())
     {
-        resolveRectCircleCollision(player.getHitbox(),barrel
+        resolveRectCircleCollision(player.getHitbox(), barrel
         );
     }
     botupdate(aggressiveBot, bounds, dt);
@@ -180,22 +182,6 @@ void Game::update(float dt)
     resolveRectCollision(player.getHitbox(), aggressiveBot.getHitbox());
     resolveRectCollision(player.getHitbox(), zoneBot.getHitbox());
     resolveRectCollision(aggressiveBot.getHitbox(), zoneBot.getHitbox());
-}
-
-    static bool lastAtkState = true;
-
-    if (player.isAttacking() && !lastAtkState)
-    {
-        aggressiveBot.resetHit();
-        aggressiveBot.wasJustHit();
-        zoneBot.resetHit();
-        zoneBot.wasJustHit();
-    }
-
-    lastAtkState = player.isAttacking();
-
-    player_enemy(zoneBot);
-    player_enemy(aggressiveBot);
 
     if (!player.isAlive())
     {
@@ -213,7 +199,6 @@ void Game::update(float dt)
         bool goMenu = victory.run();
         return;
     }
-
 }
 
 void Game::render()

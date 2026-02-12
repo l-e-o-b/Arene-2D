@@ -39,6 +39,5 @@ namespace NpcAi
             ctx.bot->resetHit();
             ctx.bot->wasJustHit();
         }
-            ctx.bot->setAnimation("Assets/VampDead.png");
     }
 }

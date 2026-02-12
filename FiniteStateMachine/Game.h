@@ -10,7 +10,7 @@ class Game
 
 public:
     Game();
-    void run();
+    bool run();
     void botupdate(Bot& bot, sf::Rect<float> bounds, float dt);
 private:
     void processEvents();

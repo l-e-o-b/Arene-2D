@@ -266,7 +266,6 @@ void Player::render(sf::RenderWindow& window)
     if (!alive)
         return;
     window.draw(sprite);
-    window.draw(shape);
 }
 
 float Player::getCollisionRadius() const
