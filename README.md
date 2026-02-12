@@ -1,22 +1,65 @@
-```mermaid
-stateDiagram-v2
-    direction TB
+#  MiniArène2D – Intelligence Artificielle & FSM
 
-    state "Logique Berserker" as Berserker {
-        [*] --> B_Patrol
-        B_Patrol --> B_Chase : Joueur détecté\n(Distance < 400px)
-        B_Chase --> B_Attack : À portée de contact\n(Distance < 50px)
-        B_Attack --> B_Chase : Joueur s'éloigne
-        B_Chase --> B_Patrol : Joueur perdu de vue
-    }
+##  Description du projet
 
-    state "Logique Sniper" as Sniper {
-        [*] --> S_Patrol
-        S_Patrol --> S_Aim : Joueur détecté
-        S_Aim --> S_Shoot : Cible verrouillée\n(après 1.5s)
-        S_Shoot --> S_Flee : Joueur trop proche\n(Distance < 200px)
-        S_Flee --> S_Aim : Distance de sécurité\nrétablie
-        S_Aim --> S_Patrol : Joueur perdu
-    }
+**MiniArène2D** est un jeu 2D développé en **C++17** avec la bibliothèque **SFML 3.2**.
 
-```
+Le projet met en œuvre une **Finite State Machine (FSM)** permettant de contrôler plusieurs personnages non-joueurs (PNJ) dans une arène.  
+Le joueur est contrôlé au clavier et interagit avec des ennemis pilotés par une intelligence artificielle modulaire et réutilisable.
+
+---
+
+##  Technologies utilisées
+
+- **C++17**
+- **SFML 3.2**
+- **Visual Studio 2022**
+- Plateforme cible : **Windows x64**
+
+---
+
+##  Prérequis
+
+Avant de compiler le projet, assurez-vous d’avoir :
+
+- **Visual Studio 2022**
+- **SFML 3.2**
+- Une configuration en **x64**
+
+- #  Configuration de SFML
+
+1. Télécharger SFML 3.2
+2. Extraire la bibliothèque (exemple : `C:\SFML-3.2`)
+3. Configurer le projet dans Visual Studio
+
+### Include Directories
+
+C:\SFML-3.2\include
+
+### Library Directories
+
+C:\SFML-3.2\lib
+
+### Linker → Additional Dependencies
+
+sfml-graphics.lib
+sfml-window.lib
+sfml-system.lib
+
+---
+
+#  Compilation
+
+1. Ouvrir le fichier `.sln`
+2. Sélectionner :
+   - Configuration : **Release**
+   - Plateforme : **x64**
+3. Build Solution
+
+---
+
+#  Lancer le jeu
+
+- Appuyer sur **Ctrl + F5**
+
+---
