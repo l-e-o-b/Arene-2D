@@ -1,25 +1,24 @@
 #include "StateMachine/NPC.h"
 #include <SFML/Graphics.hpp>
 #include "Game.h"
+#include "MainMenu.h"
 int main()
 {
-    //Npc npc;
+    while (true)
+    {
+        MainMenu menu;
 
-    //npc.Init();
+        if (!menu.run())
+            break;
 
-    //while (true)
-    //{
-    //    npc.Update();
-    //}
-    Game game;
-    game.run();
+        Game game;
+
+        bool returnToMenu = game.run();
+
+        if (!returnToMenu)
+            break;
+    }
+
     return 0;
 }
 
-
-/*
-Template
-FSM
-fichiers inl
-
-*/

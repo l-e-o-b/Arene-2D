@@ -12,7 +12,7 @@ Game::Game()
 }
 
 
-void Game::run()
+bool Game::run()
 {
     while (window.isOpen())
     {
@@ -22,8 +22,28 @@ void Game::run()
         update(dt);
 
         render();
+
+        // --- GAME OVER ---
+        if (!player.isAlive())
+        {
+            window.close();
+            GameOverScreen screen;
+            return screen.run();  // true = menu, false = quit
+        }
+
+        // --- VICTORY ---
+        if (aggressiveBot.gethp() <= 0 &&
+            zoneBot.gethp() <= 0)
+        {
+            window.close();
+            VictoryScreen screen;
+            return screen.run();  // true = menu, false = quit
+        }
     }
+
+    return false;
 }
+
 
 void Game::player_enemy(Bot& bot) {
     if (bot.gethp() > 0 &&
@@ -177,15 +197,20 @@ void Game::update(float dt)
     if (!player.isAlive())
     {
         window.close();
-        showGameOverWindow();
+        GameOverScreen gameOver;
+        bool goMenu = gameOver.run();
+        return;
     }
 
     if (aggressiveBot.gethp() <= 0 &&
         zoneBot.gethp() <= 0)
     {
-        window.close();           // ferme le jeu principal
-        showVictoryWindow();      
+        window.close();
+        VictoryScreen victory;
+        bool goMenu = victory.run();
+        return;
     }
+
 }
 
 void Game::render()
@@ -199,94 +224,14 @@ void Game::render()
         zoneBot.Render(window);
     map.render(window);
 
-    for (const auto& barrel : map.getObstacleColliders())
+  /*  for (const auto& barrel : map.getObstacleColliders())
     {
         sf::CircleShape debug = barrel;
         debug.setFillColor(sf::Color::Transparent);
         debug.setOutlineThickness(2.f);
         debug.setOutlineColor(sf::Color::Green);
         window.draw(debug);
-    }
+    }*/
     window.display();
 
 }
-
-void Game::showVictoryWindow()
-{
-    sf::RenderWindow victoryWindow(
-        sf::VideoMode({ 600, 400 }),
-        "Victoire"
-    );
-
-    sf::Font font;
-    if (!font.openFromFile("Assets/arial.ttf"))
-    {
-        std::cout << "Erreur chargement font\n";
-        return;
-    }
-
-    sf::Text text(font);
-    text.setString("VICTOIRE !");
-    text.setCharacterSize(60);
-    text.setFillColor(sf::Color::Green);
-    text.setStyle(sf::Text::Bold);
-    text.setPosition({ 150.f, 150.f });
-
-    while (victoryWindow.isOpen())
-    {
-        while (const auto event = victoryWindow.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-                victoryWindow.close();
-        }
-
-        victoryWindow.clear(sf::Color::Black);
-        victoryWindow.draw(text);
-        victoryWindow.display();
-    }
-}
-
-void Game::showGameOverWindow()
-{
-    sf::RenderWindow gameOverWindow(
-        sf::VideoMode({ 600, 400 }),
-        "Game Over"
-    );
-
-    sf::Font font;
-    if (!font.openFromFile("Assets/arial.ttf"))
-    {
-        std::cout << "Erreur chargement font\n";
-        return;
-    }
-
-    sf::Text text(font);
-    text.setString("GAME OVER");
-    text.setCharacterSize(60);
-    text.setFillColor(sf::Color::Red);
-    text.setStyle(sf::Text::Bold);
-
-    sf::FloatRect bounds = text.getLocalBounds();
-    text.setOrigin({ bounds.size.x / 2.f, bounds.size.y / 2.f });
-    text.setPosition({ 300.f, 200.f });
-
-    while (gameOverWindow.isOpen())
-    {
-        while (const auto event = gameOverWindow.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-                gameOverWindow.close();
-        }
-
-        gameOverWindow.clear(sf::Color::Black);
-        gameOverWindow.draw(text);
-        gameOverWindow.display();
-    }
-}
-
-
-
-
-
-
-
