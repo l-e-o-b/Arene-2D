@@ -21,7 +21,6 @@ public:
 
     void update(float dt);
     void render(sf::RenderWindow& window);
-    const sf::CircleShape& getAtkCircle() const;
     bool isAttacking() const;
     int gethp();
     int getdmg();
@@ -29,7 +28,6 @@ public:
     void clampToMap(const sf::FloatRect& bounds);
     const sf::Vector2f& getPosition() const;
     void movement(float dt);
-    void following_circle(float dt);
     void Attack(float dt);
     float getCollisionRadius() const;
     sf::RectangleShape& getHitbox();
@@ -41,12 +39,13 @@ public:
     void setHit();
     void resetHit();
     bool isAlive() const;
-
-
+    sf::Vector2f getForwardVector() const;
+    float getAttackRange() const;
+    float getAttackAngle() const;
 private:
     sf::RectangleShape shape;
-    sf::CircleShape atkCircle;
-
+    float attackRange = 50.f;
+    float attackAngle = 45.f;
     int directionRow = 0;
     float speed;
     float atk_speed;

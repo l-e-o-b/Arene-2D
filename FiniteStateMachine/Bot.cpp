@@ -87,10 +87,46 @@ BotType Bot::getType() const
 {
     return type;
 }
-void Bot::markHit()
+void Bot::markHit(int damage)
 {
+    pendingDamage = damage;
     hitThisFrame = true;
 }
+
+int Bot::getPendingDamage() const
+{
+    return pendingDamage;
+}
+
+void Bot::clearPendingDamage()
+{
+    pendingDamage = 0;
+}
+bool Bot::isInsideCone(const Player& player) const
+{
+    sf::Vector2f toBot = getPosition() - player.getPosition();
+
+    float distanceSq = toBot.x * toBot.x + toBot.y * toBot.y;
+    if (distanceSq > player.getAttackRange() * player.getAttackRange())
+        return false;
+
+    float length = std::sqrt(distanceSq);
+    if (length == 0.f)
+        return false;
+
+    toBot /= length; // normalize
+
+    sf::Vector2f forward = player.getForwardVector();
+
+    float dot = forward.x * toBot.x + forward.y * toBot.y;
+
+    float halfAngleRad = (player.getAttackAngle() * 0.5f) * 3.14159265f / 180.f;
+
+    float cosLimit = std::cos(halfAngleRad);
+
+    return dot >= cosLimit;
+}
+
 
 bool Bot::wasJustHit()
 {
@@ -150,7 +186,6 @@ void Bot::Init()
 
     idle->AddTransition(Conditions::IsHit, hurt);
     chase->AddTransition(Conditions::IsHit, hurt);
-    attack->AddTransition(Conditions::IsHit, hurt);
     hurt->AddTransition(
         [](const NpcContext& ctx)
         {
@@ -161,22 +196,6 @@ void Bot::Init()
     fsm.Init(idle, context);
 }
 
-bool Bot::checkHit(const sf::CircleShape& atkCircle) const
-{
-    sf::Vector2f cPos = atkCircle.getPosition();
-    float radius = atkCircle.getRadius();
-
-    sf::Vector2f rPos = shape.getPosition();
-    sf::Vector2f half = shape.getSize() / 2.f;
-
-    float closestX = std::clamp(cPos.x, rPos.x - half.x, rPos.x + half.x);
-    float closestY = std::clamp(cPos.y, rPos.y - half.y, rPos.y + half.y);
-
-    float dx = cPos.x - closestX;
-    float dy = cPos.y - closestY;
-
-    return (dx * dx + dy * dy) <= (radius * radius);
-}
 void Bot::clampToMap(const sf::FloatRect& bounds)
 {
     sf::Vector2f pos = shape.getPosition();
@@ -297,8 +316,6 @@ void Bot::Update(float dt)
 
 void Bot::Render(sf::RenderWindow& window)
 {
-    window.draw(sprite);
-    if (attacking)
-        window.draw(attackHitbox);
-
+    if (hp > 0)
+        window.draw(sprite);
 }

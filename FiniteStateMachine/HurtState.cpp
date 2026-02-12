@@ -19,15 +19,26 @@ namespace NpcAi
     {
         timer += sf::seconds(ctx.dt);
 
-        if (timer >= sf::seconds(0.5f))
+        if (timer >= sf::seconds(1.f))
         {
-            ctx.bot->setHurt(true);
-        }
+            int dmg = ctx.bot->getPendingDamage();
 
+            if (dmg > 0)
+            {
+                ctx.bot->sethp(ctx.bot->gethp() - dmg);
+                ctx.bot->clearPendingDamage();
+                ctx.bot->setHurt(true);
+            }
+        }
     }
 
     void HurtState::Exit(NpcContext ctx)
     {
-        ctx.bot->setAnimation("Assets/VampIdle.png");
+        if (ctx.bot->gethp() > 1) {
+            ctx.bot->setAnimation("Assets/VampIdle.png");
+            ctx.bot->resetHit();
+            ctx.bot->wasJustHit();
+        }
+            ctx.bot->setAnimation("Assets/VampDead.png");
     }
 }

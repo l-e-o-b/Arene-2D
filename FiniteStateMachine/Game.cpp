@@ -28,7 +28,7 @@ Game::Game()
 
     backgroundSprite.setPosition({ 0.f, 0.f });
 
-    // Adaptation à la fenêtre
+    // Adaptation ï¿½ la fenï¿½tre
     sf::Vector2u textureSize = backgroundTexture.getSize();
     sf::Vector2u windowSize = window.getSize();
 
@@ -74,23 +74,6 @@ bool Game::run()
             return screen.run();  // true = menu, false = quit
         }
     }
-
-    return false;
-}
-
-
-void Game::player_enemy(Bot& bot) {
-    if (bot.gethp() > 0 &&
-        player.isAttacking() &&
-        bot.canBeHit() &&
-        bot.checkHit(player.getAtkCircle()))
-    {
-        bot.sethp(bot.gethp() - player.getdmg());
-        std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
-        bot.setHit();
-        bot.markHit();
-    }
-}
 
 
 void resolveRectCircleCollision(
@@ -212,6 +195,7 @@ void Game::update(float dt)
     resolveRectCollision(player.getHitbox(), aggressiveBot.getHitbox());
     resolveRectCollision(player.getHitbox(), zoneBot.getHitbox());
     resolveRectCollision(aggressiveBot.getHitbox(), zoneBot.getHitbox());
+}
 
     static bool lastAtkState = true;
 

@@ -14,4 +14,9 @@ void IdleState::Enter(NpcContext _context)
 
 void IdleState::Execute(NpcContext _context)
 {
+    if (_context.player->isAttacking() &&
+        _context.bot->isInsideCone(*_context.player))
+    {
+        _context.bot->markHit(_context.player->getdmg());
+    }
 }

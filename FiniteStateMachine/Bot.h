@@ -38,7 +38,6 @@ public:
     void resetHit();
     bool canBeHit() const;
     void setHit();
-    bool checkHit(const sf::CircleShape& atkCircle) const;
     void clampToMap(const sf::FloatRect& bounds);
     int gethp();
     int getdmg();
@@ -52,10 +51,13 @@ public:
     sf::RectangleShape& getAttackHitbox();
 
     void markHit();
+    void markHit(int damage);
+    int getPendingDamage() const;
+    void clearPendingDamage();
     bool wasJustHit();
     bool isHurtFinished() const;
     void setHurt(bool hurt);
-
+    bool isInsideCone(const Player& player) const;
 private:
     // --- Partie JEU ---
     sf::RectangleShape shape;
@@ -64,7 +66,8 @@ private:
     bool damaged;
     bool attacking;
     bool attackAnimFinished = false;
-    int attackFrameCount = 12;
+    int attackFrameCount = 12;    bool immune = false;
+
     BotType type;
 
     // --- Partie Animation ---
@@ -84,8 +87,10 @@ private:
     float attackCooldown = 1.0f;
     float attackTimer = 0.0f;
 
+    int pendingDamage = 0;
     sf::RectangleShape attackHitbox;
     bool hitThisFrame = false;
+
     bool hurtFinished = false;
 
 };
