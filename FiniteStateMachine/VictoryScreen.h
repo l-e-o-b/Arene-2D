@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <cstdint>
+
 
 class VictoryScreen
 {
@@ -18,4 +20,7 @@ private:
     void setup();
     void processEvents(bool& goMenu, bool& quit);
     void render();
+    float animationTime = 0.f;
+    float animationDuration = 1.0f; // 1 seconde
+
 };
