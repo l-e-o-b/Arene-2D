@@ -82,13 +82,36 @@ BotType Bot::getType() const
 {
     return type;
 }
+void Bot::markHit()
+{
+    hitThisFrame = true;
+}
 
+bool Bot::wasJustHit()
+{
+    if (hitThisFrame)
+    {
+        hitThisFrame = false;
+        return true;
+    }
+    return false;
+}
+
+bool Bot::isHurtFinished() const
+{
+    return hurtFinished;
+}
+
+void Bot::setHurt(bool hurt) {
+    hurtFinished = hurt;
+}
 
 void Bot::Init()
 {
     auto* idle = fsm.CreateState<IdleState>();
     auto* chase = fsm.CreateState<ChaseState>();
     auto* attack = fsm.CreateState<AttackState>();
+    auto* hurt = fsm.CreateState<HurtState>();
 
     // --- Transitions Idle → Chase ---
     if (type == BotType::Aggressive)
@@ -118,6 +141,17 @@ void Bot::Init()
             return ctx.bot->isAttackFinished();
         },
         chase
+    );
+
+    idle->AddTransition(Conditions::IsHit, hurt);
+    chase->AddTransition(Conditions::IsHit, hurt);
+    attack->AddTransition(Conditions::IsHit, hurt);
+    hurt->AddTransition(
+        [](const NpcContext& ctx)
+        {
+            return ctx.bot->isHurtFinished();
+        },
+        idle
     );
     fsm.Init(idle, context);
 }
@@ -201,6 +235,7 @@ void Bot::Update(float dt)
 
     sprite.setPosition(shape.getPosition());
     context.BotPosition = shape.getPosition();
+    context.dt = dt;
     fsm.Update(context);
     animTimer += sf::seconds(dt);
 

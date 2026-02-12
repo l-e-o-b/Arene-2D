@@ -1,33 +1,33 @@
 #include "HurtState.h"
-#include <cmath>
-#include <iostream>
 #include "Bot.h"
 
 namespace NpcAi
 {
-    void HurtState::Enter(NpcContext _context)
+    void HurtState::Enter(NpcContext ctx)
     {
-        _context.bot->setAnimation("Assets/VampChase.png");
-
-    }
-
-    void HurtState::Execute(NpcContext _context)
-    {
-        if (_context.bot == nullptr)
+        timer = sf::Time::Zero;
+        ctx.bot->setHurt(false);
+        ctx.bot->setAnimation("Assets/VampHurt.png");
+        if (ctx.bot == nullptr)
             return;
 
-        sf::Vector2f direction = _context.playerPosition - _context.BotPosition;
-
-        float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-        if (length > 0.f)
-            direction /= length;
-
-        _context.bot->setDirection(direction);
-        _context.bot->move(direction, 1.f / 60.f);
+        sf::Vector2f direction = ctx.playerPosition - ctx.BotPosition;
+        ctx.bot->setDirection(direction);
     }
 
-    void HurtState::Exit(NpcContext)
+    void HurtState::Execute(NpcContext ctx)
     {
+        timer += sf::seconds(ctx.dt);
 
+        if (timer >= sf::seconds(0.5f))
+        {
+            ctx.bot->setHurt(true);
+        }
+
+    }
+
+    void HurtState::Exit(NpcContext ctx)
+    {
+        ctx.bot->setAnimation("Assets/VampIdle.png");
     }
 }
