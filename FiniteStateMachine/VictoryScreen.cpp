@@ -89,8 +89,6 @@ void VictoryScreen::processEvents(bool& goMenu, bool& quit)
 
 void VictoryScreen::render()
 {
-    animationTime += 0.016f; // ~60fps approximation
-    float progress = std::min(animationTime / animationDuration, 1.f);
 
     window.clear(sf::Color(30, 30, 30));
 
@@ -120,13 +118,6 @@ void VictoryScreen::render()
         quitButton.setFillColor(sf::Color::White);
         quitButton.setScale({ 1.f, 1.f });
     }
-    // Fade (alpha)
-    std::uint8_t alpha = static_cast<std::uint8_t>(255 * progress);
-    title.setFillColor(sf::Color(0, 255, 0, alpha)); // Vert avec alpha
-
-    // Zoom progressif
-    float scale = 0.8f + (0.2f * progress); // de 0.8 → 1.0
-    title.setScale({ scale, scale });
 
     window.draw(title);
     window.draw(menuButton);

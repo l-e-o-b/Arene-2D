@@ -25,4 +25,7 @@ private:
     Bot aggressiveBot;
     Bot zoneBot;
     Map map;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
+
 };

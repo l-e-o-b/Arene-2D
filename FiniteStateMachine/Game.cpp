@@ -4,7 +4,23 @@ Game::Game()
     : window(sf::VideoMode{ sf::Vector2u{800, 600} }, "Mini Arene 2D")
     , aggressiveBot({ 200.f, 300.f }, BotType::Aggressive)
     , zoneBot({ 600.f, 300.f }, BotType::ZoneGuard)
+    , backgroundSprite(backgroundTexture)
 {
+    if (!backgroundTexture.loadFromFile("Assets/background.png"))
+    {
+        std::cout << "Erreur chargement background\n";
+    }
+    backgroundSprite.setTexture(backgroundTexture);
+    backgroundSprite.setOrigin({ 0.f, 0.f });
+    backgroundSprite.setPosition({0.f, 0.f});
+    sf::Vector2u textureSize = backgroundTexture.getSize();
+    sf::Vector2u windowSize = window.getSize();
+
+    float scaleX = static_cast<float>(windowSize.x) / textureSize.x;
+    float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
+
+    backgroundSprite.setScale({ scaleX, scaleY });
+
     window.setFramerateLimit(60);
 
     aggressiveBot.Init();
@@ -215,8 +231,11 @@ void Game::update(float dt)
 
 void Game::render()
 {
-    window.clear(sf::Color(30, 30, 30));
+    window.clear();
+    backgroundSprite.setColor(sf::Color::Green);
 
+
+    window.draw(backgroundSprite); 
     player.render(window);
     if (aggressiveBot.gethp() > 0)
         aggressiveBot.Render(window);
@@ -224,14 +243,5 @@ void Game::render()
         zoneBot.Render(window);
     map.render(window);
 
-  /*  for (const auto& barrel : map.getObstacleColliders())
-    {
-        sf::CircleShape debug = barrel;
-        debug.setFillColor(sf::Color::Transparent);
-        debug.setOutlineThickness(2.f);
-        debug.setOutlineColor(sf::Color::Green);
-        window.draw(debug);
-    }*/
     window.display();
-
 }
