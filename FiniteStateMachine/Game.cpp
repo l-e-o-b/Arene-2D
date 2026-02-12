@@ -34,6 +34,7 @@ void Game::player_enemy(Bot& bot) {
         bot.sethp(bot.gethp() - player.getdmg());
         std::cout << "dealt " << player.getdmg() << "dmg" << std::endl;
         bot.setHit();
+        bot.markHit();
     }
 }
 
@@ -163,7 +164,9 @@ void Game::update(float dt)
     if (player.isAttacking() && !lastAtkState)
     {
         aggressiveBot.resetHit();
+        aggressiveBot.wasJustHit();
         zoneBot.resetHit();
+        zoneBot.wasJustHit();
     }
 
     lastAtkState = player.isAttacking();

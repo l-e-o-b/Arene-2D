@@ -11,5 +11,6 @@ namespace NpcAi
         static bool IsSeeingPlayer(const NpcContext& context);
         static bool CanEnterAttack(const NpcContext& context);
         static bool AlwaysTrue(const NpcContext&);
+        static bool IsHit(const NpcContext& ctx);
     };
 }

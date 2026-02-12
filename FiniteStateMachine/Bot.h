@@ -5,9 +5,11 @@
 #include "NpcStates/ChaseState.h"
 #include "NpcStates/Conditions.h"
 #include "NpcStates/NpcContext.h"
-#include "NpcStates/PatrolState.h"
+#include "HurtState.h"
 #include "AttackState.h"
 #include "IdleState.h"
+
+#include <iostream>
 
 using namespace NpcAi;
 
@@ -49,6 +51,10 @@ public:
     sf::RectangleShape& getHitbox();
     sf::RectangleShape& getAttackHitbox();
 
+    void markHit();
+    bool wasJustHit();
+    bool isHurtFinished() const;
+    void setHurt(bool hurt);
 private:
     // --- Partie JEU ---
     sf::RectangleShape shape;
@@ -76,6 +82,10 @@ private:
 
     float attackCooldown = 1.0f;
     float attackTimer = 0.0f;
+
+    bool hitThisFrame = false;
+    bool hurtFinished = false;
+
 
     sf::RectangleShape attackHitbox;
 

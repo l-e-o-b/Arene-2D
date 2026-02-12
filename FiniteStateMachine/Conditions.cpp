@@ -29,4 +29,8 @@ namespace NpcAi
     {
         return true;
     }
+    bool Conditions::IsHit(const NpcContext& ctx)
+    {
+        return ctx.bot && ctx.bot->wasJustHit();
+    }
 }

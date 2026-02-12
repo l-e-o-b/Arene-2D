@@ -13,6 +13,7 @@ public:
 
     sf::Vector2f BotPosition;
     sf::Vector2f playerPosition;
+    float dt = 0.f;
 
     float detectionRadius = 200.f;
     float attackRange = 40.f;  

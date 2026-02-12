@@ -1,14 +1,19 @@
 #pragma once
 #include "StateMachine/State.h"
 #include "NpcStates/NpcContext.h"
+#include "SFML/System.hpp"
 
 namespace NpcAi
 {
     class HurtState : public FSM::State<NpcContext>
     {
     public:
-        void Enter(NpcContext _context) override;
-        void Execute(NpcContext _context) override;
-        void Exit(NpcContext _context) override;
+        void Enter(NpcContext ctx) override;
+        void Execute(NpcContext ctx) override;
+        void Exit(NpcContext ctx) override;
+
+    private:
+        sf::Time timer = sf::Time::Zero;
+        const sf::Time duration = sf::seconds(0.5f);
     };
 }
