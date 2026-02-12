@@ -5,6 +5,7 @@
 #include "map.h"
 class Game
 {
+
 public:
     Game();
     void run();
@@ -22,5 +23,4 @@ private:
     Bot aggressiveBot;
     Bot zoneBot;
     Map map;
-
 };

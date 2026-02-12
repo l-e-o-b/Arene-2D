@@ -43,10 +43,29 @@ sf::RectangleShape& Player::getHitbox()
     return shape;
 }
 
+bool Player::isAlive() const
+{
+    return alive;
+}
+
+
 void Player::update(float dt)
 {
-    shape.setPosition(sprite.getPosition());
+    if (!alive)
+        return;
+
+    if (damaged)
+    {
+        invincibilityTimer += sf::seconds(dt);
+        if (invincibilityTimer >= invincibilityDuration)
+        {
+            damaged = false;
+            invincibilityTimer = sf::Time::Zero;
+        }
+    }
+
     movement(dt);
+    sprite.setPosition(shape.getPosition());
     following_circle(dt);
     if (!atk_state) {
         Attack(dt);
@@ -54,6 +73,9 @@ void Player::update(float dt)
 }
 
 void Player::movement(float dt) {
+    if (!alive)
+        return;
+
     sf::Vector2f movement{ 0.f, 0.f };
 
     bool isMoving = false;
@@ -168,7 +190,7 @@ void Player::movement(float dt) {
         idleTimer = 0.f;
         currentIdleFrame = 0;
     }
-    sprite.move(movement * dt);
+    shape.move(movement * dt);
 }
 
 void Player::following_circle(float dt) {
@@ -184,6 +206,9 @@ void Player::following_circle(float dt) {
 }
 
 void Player::Attack(float dt) {
+    if (!alive)
+        return;
+
     atkAcc += sf::seconds(dt);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
     {
@@ -209,7 +234,7 @@ bool Player::isAttacking() const
 sf::Time Player::getAtkAcc() {
     return atkAcc;
 }
-int Player::getAtkSpeed() {
+float Player::getAtkSpeed() {
     return atk_speed;
 }
 int Player::gethp() {
@@ -226,20 +251,24 @@ void Player::clampToMap(const sf::FloatRect& bounds)
     sf::Vector2f pos = shape.getPosition();
     sf::Vector2f half = shape.getSize() / 2.f;
 
-    pos.x = std::clamp(pos.x, (bounds.position.x + half.x), bounds.position.x + (bounds.size.x - half.x));
-    pos.y = std::clamp(pos.y, (bounds.position.y + half.y), bounds.position.y + (bounds.size.y - half.y));
+    pos.x = std::clamp(pos.x,
+        bounds.position.x + half.x,
+        bounds.position.x + bounds.size.x - half.x);
+
+    pos.y = std::clamp(pos.y,
+        bounds.position.y + half.y,
+        bounds.position.y + bounds.size.y - half.y);
 
     shape.setPosition(pos);
-    sf::Vector2f pos1 = sprite.getPosition();
-
-    pos1.x = std::clamp(pos1.x, (bounds.position.x + 24.f), bounds.position.x + (bounds.size.x - 24.f));
-    pos1.y = std::clamp(pos1.y, (bounds.position.y + 24.f), bounds.position.y + (bounds.size.y - 24.f));
-
-    sprite.setPosition(pos1);
+    sprite.setPosition(pos);
 }
+
 
 void Player::render(sf::RenderWindow& window)
 {
+    if (!alive)
+        return;
+
     window.draw(atkCircle);
     window.draw(sprite);
 }
@@ -248,4 +277,40 @@ float Player::getCollisionRadius() const
 {
     return sprite.getGlobalBounds().size.x * 0.4f;
 }
+
+void Player::takeDamage(int dmg)
+{
+    if (!alive || damaged)
+        return;
+
+    hp -= dmg;
+    damaged = true;
+    invincibilityTimer = sf::Time::Zero;
+
+    std::cout << "Player takes " << dmg << " dmg, hp = " << hp << std::endl;
+
+    if (hp <= 0)
+    {
+        hp = 0;
+        alive = false;
+        std::cout << "Player is DEAD\n";
+    }
+}
+
+
+bool Player::canBeHit() const
+{
+    return !damaged;
+}
+
+void Player::setHit()
+{
+    damaged = true;
+}
+
+void Player::resetHit()
+{
+    damaged = false;
+}
+
 

@@ -47,7 +47,8 @@ void resolveRectCircleCollision(
     sf::Vector2f half = rect.getSize() / 2.f;
 
     sf::Vector2f circlePos = circle.getPosition();
-    float radius = circle.getRadius();
+    float radius = circle.getRadius() + 2.f; // padding
+
 
     float closestX = std::clamp(
         circlePos.x,
@@ -123,19 +124,28 @@ void Game::processEvents()
     }
 }
 
-void Game::botupdate(Bot& bot, sf::Rect<float> bounds, float dt) {
-    if (bot.gethp() > 0) {
-        bot.getContext().playerPosition = player.getPosition();
-        bot.Update(dt);
-        bot.clampToMap(bounds);
-    }
+void Game::botupdate(Bot& bot, sf::Rect<float> bounds, float dt)
+{
+    if (bot.gethp() <= 0)
+        return;
+
+    bot.getContext().player = &player;
+    bot.getContext().playerPosition = player.getPosition();
+
+    bot.Update(dt);
+    bot.clampToMap(bounds);
 }
+
+
 
 void Game::update(float dt)
 {
     auto bounds = map.getInnerBounds();
-    player.update(dt);
-    player.clampToMap(bounds);
+    if (player.isAlive())
+    {
+        player.update(dt);
+        player.clampToMap(bounds);
+    }
 
     for (const auto& barrel : map.getObstacleColliders())
     {
@@ -163,7 +173,6 @@ void Game::update(float dt)
 
     player_enemy(zoneBot);
     player_enemy(aggressiveBot);
-
 }
 
 void Game::render()
@@ -186,5 +195,9 @@ void Game::render()
         window.draw(debug);
     }
     window.display();
+
 }
+
+
+
 
