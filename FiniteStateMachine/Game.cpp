@@ -1,10 +1,28 @@
 #include <iostream>
 #include "Game.h"
 Game::Game()
-    : window(sf::VideoMode{ sf::Vector2u{800, 600} }, "Mini Arene 2D")
+    : window(sf::VideoMode({ 800, 600 }), "Mini Arene 2D")
     , aggressiveBot({ 200.f, 300.f }, BotType::Aggressive)
     , zoneBot({ 600.f, 300.f }, BotType::ZoneGuard)
+    , backgroundTexture()
+    , backgroundSprite(backgroundTexture)
 {
+    if (!backgroundTexture.loadFromFile("Assets/background.png"))
+    {
+        std::cout << "Erreur chargement background\n";
+    }
+
+    backgroundSprite.setTexture(backgroundTexture);
+    backgroundSprite.setPosition({ 0.f, 0.f });
+
+    sf::Vector2u textureSize = backgroundTexture.getSize();
+    sf::Vector2u windowSize = window.getSize();
+
+    float scaleX = static_cast<float>(windowSize.x) / textureSize.x;
+    float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
+
+    backgroundSprite.setScale(sf::Vector2f(scaleX, scaleY));
+
     window.setFramerateLimit(60);
 
     aggressiveBot.Init();
@@ -12,7 +30,8 @@ Game::Game()
 }
 
 
-void Game::run()
+
+bool Game::run()
 {
     while (window.isOpen())
     {
@@ -22,8 +41,24 @@ void Game::run()
         update(dt);
 
         render();
+
+        // --- GAME OVER ---
+        if (!player.isAlive())
+        {
+            window.close();
+            GameOverScreen screen;
+            return screen.run();  // true = menu, false = quit
+        }
+
+        // --- VICTORY ---
+        if (aggressiveBot.gethp() <= 0 &&
+            zoneBot.gethp() <= 0)
+        {
+            window.close();
+            VictoryScreen screen;
+            return screen.run();  // true = menu, false = quit
+        }
     }
-}
 
 
 void resolveRectCircleCollision(
@@ -147,27 +182,51 @@ void Game::update(float dt)
     resolveRectCollision(aggressiveBot.getHitbox(), zoneBot.getHitbox());
 }
 
+    static bool lastAtkState = true;
+
+    if (player.isAttacking() && !lastAtkState)
+    {
+        aggressiveBot.resetHit();
+        aggressiveBot.wasJustHit();
+        zoneBot.resetHit();
+        zoneBot.wasJustHit();
+    }
+
+    lastAtkState = player.isAttacking();
+
+    player_enemy(zoneBot);
+    player_enemy(aggressiveBot);
+
+    if (!player.isAlive())
+    {
+        window.close();
+        GameOverScreen gameOver;
+        bool goMenu = gameOver.run();
+        return;
+    }
+
+    if (aggressiveBot.gethp() <= 0 &&
+        zoneBot.gethp() <= 0)
+    {
+        window.close();
+        VictoryScreen victory;
+        bool goMenu = victory.run();
+        return;
+    }
+
+}
+
 void Game::render()
 {
-    window.clear(sf::Color(30, 30, 30));
+    window.clear();
+    backgroundSprite.setColor(sf::Color::Green);
 
+
+    window.draw(backgroundSprite); 
     player.render(window);
     aggressiveBot.Render(window);
     zoneBot.Render(window);
     map.render(window);
 
-    for (const auto& barrel : map.getObstacleColliders())
-    {
-        sf::CircleShape debug = barrel;
-        debug.setFillColor(sf::Color::Transparent);
-        debug.setOutlineThickness(2.f);
-        debug.setOutlineColor(sf::Color::Green);
-        window.draw(debug);
-    }
     window.display();
-
 }
-
-
-
-

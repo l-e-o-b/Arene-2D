@@ -48,6 +48,9 @@ public:
     void startAttackAnim();
     void Attacked();
     sf::RectangleShape& getHitbox();
+    sf::RectangleShape& getAttackHitbox();
+
+    void markHit();
     void markHit(int damage);
     int getPendingDamage() const;
     void clearPendingDamage();
@@ -85,6 +88,7 @@ private:
     float attackTimer = 0.0f;
 
     int pendingDamage = 0;
+    sf::RectangleShape attackHitbox;
     bool hitThisFrame = false;
 
     bool hurtFinished = false;

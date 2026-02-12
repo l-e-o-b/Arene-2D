@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "Bot.h"
 #include "map.h"
+#include "GameOverScreen.h"
+#include "VictoryScreen.h"
 class Game
 {
 
@@ -22,4 +24,7 @@ private:
     Bot aggressiveBot;
     Bot zoneBot;
     Map map;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
+
 };

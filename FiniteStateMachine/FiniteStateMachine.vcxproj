@@ -141,18 +141,23 @@
     <ClCompile Include="ChaseState.cpp" />
     <ClCompile Include="Conditions.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameOverScreen.cpp" />
     <ClCompile Include="HurtState.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="VictoryScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AttackState.h" />
     <ClInclude Include="Bot.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameOverScreen.h" />
     <ClInclude Include="HurtState.h" />
     <ClInclude Include="IdleState.h" />
+    <ClInclude Include="MainMenu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="NpcStates\ChaseState.h" />
     <ClInclude Include="NpcStates\Conditions.h" />
@@ -163,6 +168,7 @@
     <ClInclude Include="StateMachine\NPC.h" />
     <ClInclude Include="StateMachine\State.h" />
     <ClInclude Include="StateMachine\StateMachine.h" />
+    <ClInclude Include="VictoryScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StateMachine\State.inl" />

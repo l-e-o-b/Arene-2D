@@ -31,7 +31,7 @@ void AttackState::Execute(NpcContext ctx)
         return;
 
     // Distance simple (hitbox rect-rect)
-    if (ctx.bot->getHitbox().getGlobalBounds()
+    if (ctx.bot->getAttackHitbox().getGlobalBounds()
         .findIntersection(ctx.player->getHitbox().getGlobalBounds()))
     {
         if (ctx.player->canBeHit())
@@ -40,5 +40,6 @@ void AttackState::Execute(NpcContext ctx)
             ctx.bot->startAttackCooldown();
         }
     }
+
 }
 
